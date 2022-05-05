@@ -1,0 +1,7 @@
+mutation AdminTakeMoneyFieldCompleted($fieldId:Float!){
+     adminTakeMoneyFieldCompleted(fieldId:$fieldId){
+        code
+        success
+        message
+    }
+}
