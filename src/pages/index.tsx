@@ -168,7 +168,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
       take: 5,
     },
   });
-  console.log(data.getProductsForIndex)
+  
   return {
     props: {
       data: data.getProductsForIndex,

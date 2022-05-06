@@ -356,6 +356,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     brandId: +query.brandId!,
     productClassId: +productClassId,
   };
+  
   const { data } =
     await client.query<GetBrandWithProductsQuery>({
       query: GetBrandWithProductsDocument,
@@ -363,7 +364,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
         paginationOptions,
       },
     });
-
+    console.log(data)
   return {
     props: {
       data: data.getBrandWithProducts,

@@ -39,10 +39,18 @@ export const client = new ApolloClient({
               return incoming.products;
             },
           },
-          getProduct: {
+          getProductsForIndex:{
             keyArgs: false,
             merge(_, incoming) {
-              return incoming.product;
+              console.log(incoming)
+              return incoming.products;
+            },
+          },
+          getBrandWithProducts:{
+            keyArgs: false,
+            merge(_, incoming) {
+              console.log(incoming)
+              return incoming.products;
             },
           },
           getProductsByKind: {
@@ -51,13 +59,7 @@ export const client = new ApolloClient({
               return incoming.products;
             },
           },
-          getBrandWithProducts: {
-            keyArgs: false,
-            merge(_, incoming) {
-              console.log(incoming.brandWithProducts);
-              return incoming.brandWithProducts;
-            },
-          },
+         
           getPaginationUsers: {
             keyArgs: false,
             merge(existing, incoming) {
