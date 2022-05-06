@@ -498,8 +498,8 @@ const ProductId: NextPage<Props> = ({ product }) => {
                           </div>
                           <div className={styles.imageComment}>
                             {item.imagesComment &&
-                              item.imagesComment.map((item) => (
-                                <img src={item}  />
+                              item.imagesComment.map((item,index) => (
+                                <img src={item} key={index} />
                               ))}
                           </div>
                           {item.feedbacks?.map((feedback) => (
