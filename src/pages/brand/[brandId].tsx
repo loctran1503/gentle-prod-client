@@ -64,7 +64,7 @@ const BrandId: NextPage<Props> = ({ data }) => {
   //Effect
   useEffect(() => {
     if (!data) {
-      router.push("/404");
+      router.push("/page-404");
     } else {
       setMySpinner(false);
       const item1: RedirectHeaderProps = {
