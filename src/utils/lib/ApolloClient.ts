@@ -11,7 +11,7 @@ import JwtManager from "../other/JwtManager";
 const httpLink = new HttpLink({
   uri:
     process.env.NODE_ENV === "production"
-      ? "https://boiling-garden-18748.herokuapp.com/graphql"
+      ? "http://137.184.230.138"
       : "http://localhost:4000/graphql",
   credentials: "include",
 });

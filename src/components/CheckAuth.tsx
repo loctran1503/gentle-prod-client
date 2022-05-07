@@ -21,7 +21,7 @@ import {
   ProductBrandProps,
   ProductKindProps,
 } from "../utils/type/redux/reduxType";
-// import FacebookMessenger from "./FacebookMessenger";
+import FacebookMessenger from "./FacebookMessenger";
 import MySpinner from "./MySpinner";
 
 const CheckAuth = ({ children }: { children: ReactNode }) => {
@@ -123,7 +123,7 @@ const CheckAuth = ({ children }: { children: ReactNode }) => {
     return (
       <>
         {children}
-        {/* {process.env.NODE_ENV === "production" && <FacebookMessenger />} */}
+        {process.env.NODE_ENV === "production" && <FacebookMessenger />}
       </>
     );
 };
