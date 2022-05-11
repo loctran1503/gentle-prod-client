@@ -120,7 +120,7 @@ const Footer = ({ isFixed }: FooterProps) => {
                     <h2 className={styles.heading}>Fanpage</h2>
                     <div
                       className="fb-page"
-                      data-href="https://www.facebook.com/Gentle-115404277817582/"
+                      data-href="https://m.me/113765614663507"
                       data-width="240"
                       data-hide-cover="false"
                       data-show-facepile="false"
