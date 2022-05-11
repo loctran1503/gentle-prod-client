@@ -46,6 +46,10 @@ const radioTypeList: FilterRadioProps[] = [
     value: "DATE_DESC",
     name: "Sản phẩm mới",
   },
+  {
+    value: "DISCOUNT_DESC",
+    name: "Phần trăm giảm",
+  },
 ];
 
 const BrandId: NextPage<Props> = ({ data }) => {
@@ -71,13 +75,9 @@ const BrandId: NextPage<Props> = ({ data }) => {
         displayName: "trang chủ",
         url: "/",
       };
-      const item2: RedirectHeaderProps = {
-        displayName: data.brandWithProducts?.kind.name!,
-        url: `/kind/${data.brandWithProducts?.kind.id}`,
-      };
      
-
-      const list: RedirectHeaderProps[] = [item1, item2];
+  
+      const list: RedirectHeaderProps[] = [item1];
       setRedirectList(list);
     }
   }, []);
@@ -171,11 +171,7 @@ const BrandId: NextPage<Props> = ({ data }) => {
         {data !== null && (
           <div className="grid wide">
             <div className="row">
-              {/* <div className="col l-6 l-o-3 m-6 m-o-3 c-12">
-                <h1 className="brandName">
-                  {data.brandWithProducts?.brandName}
-                </h1>
-              </div> */}
+           
               <div className={clsx("col l-12 m-12 c-12")}>
                 <div className="row">
                   <div className={clsx("col l-12 m-12 c-12")}>
@@ -184,6 +180,7 @@ const BrandId: NextPage<Props> = ({ data }) => {
                         {isMobile ? (
                           <select
                             className="select_custom"
+                            value={filterChecked}
                             onChange={(event) =>
                               handleFilterChange(event.target.value)
                             }
@@ -250,51 +247,77 @@ const BrandId: NextPage<Props> = ({ data }) => {
                           key={product.id}
                           onClick={() => handleToProductDetail(product.id)}
                         >
-                          <div className={styles.productItem}>
-                            <div className={styles.productType}>
-                              <img src={product.thumbnail} />
-                              <div>{product.class?.name}</div>
-                            </div>
-                            <div className={styles.productName}>
-                              <h2 className="textCapitalize">{product.productName}</h2>
-                            </div>
-                            {product.averageRating > 0 ? (
-                              <div className={styles.productNameAndRating}>
-                                <StarRatings
-                                  rating={product.averageRating}
-                                  starDimension="12px"
-                                  starSpacing="1px"
-                                  starRatedColor="black"
-                                />
-                                <h3>
-                                  {MoneyConverter(product.priceToDisplay)}
-                                </h3>
+                         <div className={styles.productItem}>
+                          <div className={styles.productType}>
+                            <img src={product.thumbnail} />
+                            {product.salesPercent &&
+                            product.salesPercent > 0 ? (
+                              <div className={styles.salesContainer}>
+                                <h2>{product.salesPercent}%</h2>
                               </div>
                             ) : (
-                              //No
-                              <div className={styles.productNameAndRating}>
-                                <div></div>
-                                <h3>
-                                  {MoneyConverter(product.priceToDisplay)}
-                                </h3>
+                              <div className={styles.salesContainerNone}>
+                                <h2>{product.salesPercent}%</h2>
                               </div>
                             )}
-
-                            <div className={styles.paidInfo}>
-                              <h4>Đã bán:{product.sales}</h4>
-                              <h4>Bình luận:{product.commentCount}</h4>
+                            <div className={styles.productClassContainer}>
+                              {product.class?.name}
                             </div>
-                            {/* <div className={styles.paidController}>
-                            <FontAwesomeIcon
-                              className={styles.iconOnProduct}
-                              icon={faCartPlus}
-                            />
-
-                            <div className={clsx("btn btn4", styles.btnPayNow)}>
-                              Mua ngay
-                            </div>
-                          </div> */}
                           </div>
+                          <div className={styles.productName}>
+                            <h2 className="textCapitalize">
+                              {product.productName}
+                            </h2>
+                          </div>
+                          {product.minPrice === product.maxPrice ? (
+                            <div className={styles.productNameAndRating}>
+                              <h3 style={{ marginTop: 2 }}>
+                                {MoneyConverter(product.minPrice)}
+                              </h3>
+                            </div>
+                          ) : (
+                            <div className={styles.productNameAndRating}>
+                              <h3>{MoneyConverter(product.minPrice)}</h3>
+                              <span style={{ margin: "0 4px" }}>-</span>
+                              <h3>{MoneyConverter(product.maxPrice)}</h3>
+                            </div>
+                          )}
+                          {product.averageRating > 0 ? (
+                            <>
+                              <StarRatings
+                                rating={4.5}
+                                starDimension="12px"
+                                starSpacing="1px"
+                                starRatedColor="black"
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <StarRatings
+                                rating={0}
+                                starDimension="12px"
+                                starSpacing="1px"
+                                starRatedColor="black"
+                              />
+                            </>
+                          )}
+                          <div className={styles.paidInfo}>
+                            {product.sales && product.sales > 0 ? (
+                              <h4 style={{ color: "black" }}>
+                                Đã bán:{product.sales}
+                              </h4>
+                            ) : (
+                              <h4>Đã bán:{product.sales}</h4>
+                            )}
+                            {product.sales && product.sales > 0 ? (
+                              <h4 style={{ color: "black" }}>
+                                Đánh giá:{product.commentCount}
+                              </h4>
+                            ) : (
+                              <h4>Đánh giá:{product.commentCount}</h4>
+                            )}
+                          </div>
+                        </div>
                         </div>
                       ))}
                   </div>

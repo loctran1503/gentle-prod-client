@@ -8,9 +8,10 @@ import {
   ModalContent,
   ModalOverlay,
   Select, useDisclosure,
-  useToast
+
 } from "@chakra-ui/react";
 import clsx from "clsx";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import styles from "../assets/css/pages/takeMoney.module.css";
 import {
@@ -38,13 +39,13 @@ interface ErrorTakeMoneyProps {
 
 const TakeMoney = ({ imgSrc, userName, money }: TakeMoneyProps) => {
   const [takeMoneyMutation] = useTakeMoneyMutation();
-  
+  const router = useRouter()
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [field, setField] = useState<TakeMoneyFieldInput>({
     accountBankName: "",
     accountNumber: "",
     accoutName: "",
-    money: 0,
+    money ,
   });
   const [errorTakeMoney, setErrorTakeMoney] = useState<ErrorTakeMoneyProps>({
     accountBankName: false,
@@ -53,7 +54,7 @@ const TakeMoney = ({ imgSrc, userName, money }: TakeMoneyProps) => {
     money: false,
     message: "",
   });
-  const toast = useToast();
+ 
 
 
 
@@ -151,12 +152,9 @@ const TakeMoney = ({ imgSrc, userName, money }: TakeMoneyProps) => {
         });
         if (errors) console.log(errors);
         if (data?.createTakeMoneyField.success) {
-          toast({
-            title: "Thông báo",
-            description:
-              "Tạo đơn rút tiền thành công, Số tiền bạn rút sẽ được chuyển vào tài khoản trong thời gian sớm nhất, Cảm ơn bạn đã tham gia ưu đãi của chúng tôi",
-          });
-          onClose();
+          
+          router.reload()
+        
         }
         break;
     }

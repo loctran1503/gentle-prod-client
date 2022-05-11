@@ -1,3 +1,4 @@
+import { ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Badge,
   Button,
@@ -6,7 +7,8 @@ import {
   Select,
   Spinner,
   Textarea,
-  useToast
+
+  // useToast
 } from "@chakra-ui/react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,22 +25,27 @@ import {
   BillProductInput,
   CustomerInput,
   useCheckIntroduceCodeLazyQuery,
-  useCreateBillMutation
+  useCreateBillMutation,
 } from "../generated/graphql";
 import { authSelector } from "../store/reducers/authSlice";
 import {
   localSelector,
-  setBillProductsFromLocal
+  setBillProductsFromLocal,
 } from "../store/reducers/localSlice";
-import { MONEY_PAY_LIMIT } from "../utils/other/constants";
+import {
+  AMERICA,
+  KOREA,
+  KOREA_DELIVERY_PRICE,
+  KOREA_PRICE_FREESHIP,
+  US_DELIVERY_PRICE,
+  US_PRICE_FREESHIP,
+} from "../utils/other/constants";
+
 import { MoneyConverter } from "../utils/other/ConvertToMoney";
 
 const apiUrl = "https://sheltered-anchorage-60344.herokuapp.com";
 
-export interface PaymentProps {
-  listCart: BillProductInput[];
-  totalPrice: number;
-}
+
 
 interface ErrorProps {
   customerName: boolean;
@@ -59,11 +66,12 @@ interface DistrictProps {
 }
 
 const Payment = () => {
-  const toast = useToast();
+  // const toast = useToast();
   const router = useRouter();
 
   const { isAuthenticated } = useSelector(authSelector);
-  const { paymentProps } = useSelector(localSelector);
+  const { paymentProps } =
+    useSelector(localSelector);
   const [inputInValid, setInputInValid] = useState<ErrorProps>({
     customerName: false,
     message: "",
@@ -87,18 +95,20 @@ const Payment = () => {
     address: "",
   });
   const [notice, setNotice] = useState("");
-  const [typePayment, setTypePayment] = useState("");
+  const [typePayment, setTypePayment] = useState("Chuyển khoản trước");
   const [districtList, setDistrictList] = useState<string[]>([]);
-  const [districtLoading,setDistrictLoading] = useState(false)
+  const [districtLoading, setDistrictLoading] = useState(false);
   // city change
   const handleCityChange = async (idProvince: string) => {
-    setDistrictLoading(true)
-    const res = await axios.get<DistrictProps[]>(`${apiUrl}/district/?idProvince=${idProvince}`);
- 
+    setDistrictLoading(true);
+    const res = await axios.get<DistrictProps[]>(
+      `${apiUrl}/district/?idProvince=${idProvince}`
+    );
+
     let tempList: string[] = res.data.map((item) => item.name);
-  
-    setDistrictList(tempList)
-    setDistrictLoading(false)
+
+    setDistrictList(tempList);
+    setDistrictLoading(false);
   };
 
   const handleTextAreaChange = (
@@ -140,7 +150,6 @@ const Payment = () => {
       default:
         break;
     }
-   
   };
   const handleCustomerSelectChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -223,19 +232,19 @@ const Payment = () => {
       router.push("/");
     } else {
       //check paymentProps
-      if (paymentProps?.totalPrice! > MONEY_PAY_LIMIT) {
-        setTypePayment("Chuyển khoản trước");
-        toast({
-          title: "Thông báo ",
-          description:
-            "Với đơn hàng trên 2.000.000đ, quý khách vui lòng chuyển khoản trước tối thiểu 5% hoặc 10% với đơn hàng trên 5.000.000đ để xác nhận đơn hàng,Chân thành Cảm ơn quý khách đã đọc thông tin này!",
-          status: "info",
-          duration: 5000,
-          position: "top",
+      // if (paymentProps?.totalPrice! > MONEY_PAY_LIMIT) {
+      //   setTypePayment("Chuyển khoản trước");
+      //   toast({
+      //     title: "Thông báo ",
+      //     description:
+      //       "Với đơn hàng trên 2.000.000đ, quý khách vui lòng chuyển khoản trước tối thiểu 5% hoặc 10% với đơn hàng trên 5.000.000đ để xác nhận đơn hàng,Chân thành Cảm ơn quý khách đã đọc thông tin này!",
+      //     status: "info",
+      //     duration: 5000,
+      //     position: "top",
 
-          isClosable: true,
-        });
-      } else setTypePayment("Thanh toán tất cả khi nhận hàng");
+      //     isClosable: true,
+      //   });
+      // } else setTypePayment("Thanh toán tất cả khi nhận hàng");
 
       //query to get gift
       // giftQuery({
@@ -244,15 +253,35 @@ const Payment = () => {
       //   },
       // });
       setProduct(paymentProps.listCart);
+
+      const priceOfProduct =   paymentProps.listCart.reduce(
+        (prev, current) =>
+          prev + current.productPrice * current.productAmount,
+        0
+      )
       setTotalPriceOfProduct(
-        paymentProps!.listCart.reduce(
-          (prev, current) =>
-            prev + current.productPrice * current.productAmount,
-          0
-        )
+        priceOfProduct
       );
-      if (paymentProps.totalPrice > 1000000) setPriceDelivery(0);
-      else setPriceDelivery(25000);
+      const americaExisting = paymentProps.listCart.findIndex(item => item.countryNameForDeliveryPrice===AMERICA)
+       
+      if(americaExisting!==-1){
+        console.log(priceOfProduct)
+        
+        priceOfProduct < US_PRICE_FREESHIP
+        ? setPriceDelivery(US_DELIVERY_PRICE)
+        : setPriceDelivery(0);
+      }else{
+        const koreaExisting = paymentProps.listCart.findIndex(item => item.countryNameForDeliveryPrice===KOREA)
+        if(koreaExisting!==-1){
+          priceOfProduct < KOREA_PRICE_FREESHIP
+        ? setPriceDelivery(KOREA_DELIVERY_PRICE)
+        : setPriceDelivery(0);
+        }else{
+         console.log("not ameria and not korea")
+          router.push("/")
+        }
+      }
+     
     }
   }, []);
 
@@ -378,7 +407,11 @@ const Payment = () => {
         <div className="row">
           <div className="col l-12 m-12 c-12">
             <div className={styles.paymentContainer}>
-              <h1>GENTLE</h1>
+              <div className="row">
+                <div className="col l-4 l-o-4 m-4 m-o-4 c-6 m-o-3">
+                <h1 className={styles.heading}>GENTLE</h1>
+                </div>
+              </div>
               <div className="row">
                 <div className="col l-6 m-6 c-12">
                   <div className={styles.userInfo}>
@@ -446,7 +479,6 @@ const Payment = () => {
                       onChange={(event) => {
                         handleCustomerSelectChange(event);
                         handleCityChange(event.target.value);
-                     
                       }}
                     >
                       <option value="01"> Thành phố Hà Nội</option>
@@ -514,26 +546,27 @@ const Payment = () => {
                       <option value="96"> Tỉnh Cà Mau</option>
                     </Select>
                     <div className={styles.provinceContainer}>
-                    <Select
-                      isInvalid={inputInValid.province}
-                      errorBorderColor="crimson"
-                      onChange={(event) => handleCustomerSelectChange(event)}
-                      name="province"
-                     
-                      focusBorderColor="black"
-                      className="boxShadowNone"
-                    >
-                      <option value="">Chọn Quận/Huyện...</option>
-                      {districtList.length > 0 &&
-                        districtList.map((item, index) => (
-                          <option value={item} key={index}>
-                            {item}
-                          </option>
-                        ))}
-                    </Select>
-                    {districtLoading && <div className={styles.provinceLoading}>
-                    <Spinner size='md' />
-                    </div>}
+                      <Select
+                        isInvalid={inputInValid.province}
+                        errorBorderColor="crimson"
+                        onChange={(event) => handleCustomerSelectChange(event)}
+                        name="province"
+                        focusBorderColor="black"
+                        className="boxShadowNone"
+                      >
+                        <option value="">Chọn Quận/Huyện...</option>
+                        {districtList.length > 0 &&
+                          districtList.map((item, index) => (
+                            <option value={item} key={index}>
+                              {item}
+                            </option>
+                          ))}
+                      </Select>
+                      {districtLoading && (
+                        <div className={styles.provinceLoading}>
+                          <Spinner size="md" />
+                        </div>
+                      )}
                     </div>
                     <InputGroup>
                       <Textarea
@@ -653,7 +686,7 @@ const Payment = () => {
                         Hình thức thanh toán
                       </h3>
                       <div className={styles.typePaymentBody}>
-                        <div
+                        {/* <div
                           className={clsx(
                             styles.typePaymentItem,
                             paymentProps?.totalPrice! > MONEY_PAY_LIMIT &&
@@ -679,8 +712,10 @@ const Payment = () => {
                             1-2 ngày với đơn hàng tại Hồ Chí Minh và Bình Dương,
                             3-5 ngày với đơn hàng ở các tỉnh và thành phố khác
                           </p>
-                        </div>
+                        </div> */}
                         <div className={clsx(styles.typePaymentItem)}>
+                          <div className={styles.headingPaymentContainer}>
+                          <div>
                           <input
                             type="radio"
                             value={typePayment}
@@ -691,10 +726,15 @@ const Payment = () => {
                             className={styles.typePaymentInput}
                           />
                           Chuyển khoản trước
-                          <p className={styles.typePaymentNotice}>
-                            Tối thiểu 5% với đơn hàng trên 2.000.000đ hoặc 10%
-                            với đơn hàng trên 10.000.000đ
+                          </div>
+                          <div className={styles.detailPriceRuleContainer}>
+                            <ChevronRightIcon/>
+                          <p className={styles.typePaymentNotice} onClick={() => router.push("/policy/delivery")}>
+                            Xem chi tiết phí
+                            trả trước
                           </p>
+                          </div>
+                          </div>
                           <div className={styles.infoBank}>
                             <p>*Vietcombank - LOC TRAN - 0123456789</p>
                             <p>
@@ -702,7 +742,9 @@ const Payment = () => {
                               điện thoại người nhận
                             </p>
                             <p>*Ví dụ:Lộc, 0123456789</p>
-                            <p>*Liên hệ với admin để giải đáp mọi thắc mắc</p>
+                            <p>
+                              *Liên hệ với admin để được giải đáp mọi thắc mắc
+                            </p>
                             <h4 className={styles.thanksClient}>
                               Chân thành cảm ơn quý khách đã đọc nội dung này!
                             </h4>
@@ -714,10 +756,9 @@ const Payment = () => {
                       <div
                         className={styles.backToCartContainer}
                         onClick={() => {
-                          console.log(customer)
-                          // router.back()
+                     
+                          router.back()
                         }}
-                          
                       >
                         <FontAwesomeIcon icon={faArrowLeft} />
                         <p>QUAY VỀ</p>

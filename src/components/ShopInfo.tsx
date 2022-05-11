@@ -12,7 +12,7 @@ import {
   useMediaQuery,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../assets/css/components/shopInfo.module.css";
 import {
@@ -21,6 +21,7 @@ import {
   useGetProductPaidAmountQuery,
 } from "../generated/graphql";
 import { authSelector, setIsHidden } from "../store/reducers/authSlice";
+import { TIME_CELERATED } from "../utils/other/constants";
 import LocalLoading from "./LocalLoading";
 
 const ShopInfo = () => {
@@ -90,7 +91,7 @@ const ShopInfo = () => {
                   <div className={styles.heading}>gentle</div>
                   <div className={styles.body}>
                     <div className={styles.createdAt}>
-                      <h2>Ngày thành lập:12/3/2022</h2>
+                      <h2>Ngày thành lập:{TIME_CELERATED}</h2>
                     </div>
 
                     <div className={styles.statistics}>
@@ -98,7 +99,7 @@ const ShopInfo = () => {
                         <div className={styles.userPaidContainer}>
                           <h2 className={styles.totalProductPaid}>
                             Sản phẩm đã bán:
-                            {productPaidCount?.getProductPaidAmount}
+                            {productPaidCount?.getProductPaidAmount && productPaidCount.getProductPaidAmount>0 ? productPaidCount.getProductPaidAmount : 0}
                           </h2>
                           <div className={styles.userList}>
                             <h3 className={styles.textSampleUserPaid}>
@@ -210,7 +211,7 @@ const ShopInfo = () => {
   );
 };
 
-export default ShopInfo;
+export default memo(ShopInfo);
 
 // <div className={styles.userItem}>
 // <img src="https://scontent-sin6-4.xx.fbcdn.net/v/t1.6435-1/188003145_318861596508649_642500579152781477_n.jpg?stp=dst-jpg_p160x160&_nc_cat=101&ccb=1-5&_nc_sid=7206a8&_nc_ohc=RyZBZjkdD70AX_hsIRZ&_nc_ht=scontent-sin6-4.xx&oh=00_AT936vFRwStLLLOk0dSL28foRPGMOIsFO6JKZ-btuFL7lA&oe=62688297" />

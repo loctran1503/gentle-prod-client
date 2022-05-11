@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import StarRatings from "react-star-ratings";
 import styles from "../../assets/css/components/products.module.css";
-import Brand from "../../components/Brand";
+
 import Footer from "../../components/Footer";
 import MySpinner from "../../components/MySpinner";
 import Navbar from "../../components/Navbar";
@@ -15,7 +15,7 @@ import {
   GetProductsByKindDocument,
   GetProductsByKindQuery,
   PaginationOptionsInput,
-  PaginationProductsResponse
+  PaginationProductsResponse,
 } from "../../generated/graphql";
 import { client } from "../../utils/lib/ApolloClient";
 import { MoneyConverter } from "../../utils/other/ConvertToMoney";
@@ -38,12 +38,17 @@ const radioTypeList: FilterRadioProps[] = [
     value: "DATE_DESC",
     name: "Sản phẩm mới",
   },
+  {
+    value: "DISCOUNT_DESC",
+    name: "Phần trăm giảm",
+  },
 ];
 interface Props {
   data: PaginationProductsResponse;
 }
+
 const KindId: NextPage<Props> = ({ data }) => {
-  const [mySpinner,setMySpinner] = useState(true)
+  const [mySpinner, setMySpinner] = useState(true);
   const [filterChecked, setFilterChecked] = useState("SALES_DESC");
   const [productClassIdChecked, setProductClassIdChecked] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,13 +56,11 @@ const KindId: NextPage<Props> = ({ data }) => {
   const router = useRouter();
   const [products, setProducts] = useState<PaginationProductsResponse>(data);
   useEffect(() => {
-    if(!data){
-      router.push("/page-404")
-     
-    }
-    else{
+    if (!data) {
+      router.push("/page-404");
+    } else {
       setProducts(data);
-      setMySpinner(false)
+      setMySpinner(false);
     }
   }, [data]);
   useEffect(() => {
@@ -68,16 +71,16 @@ const KindId: NextPage<Props> = ({ data }) => {
       setCurrentPage(current);
     }
     // Set state for client
-    if(router.query.type){
-
-      setFilterChecked(router.query.type as string)
+    if (router.query.type) {
+      setFilterChecked(router.query.type as string);
     }
-    if(router.query.productClassId){
-      setProductClassIdChecked(+router.query.productClassId)
-    }
+    if (router.query.productClassId) {
+      setProductClassIdChecked(
     
+       +router.query.productClassId,
+      );
+    }
   }, [router.query]);
-
 
   const handlePageChange = (page: number) => {
     const skip = data.pageSize! * (page - 1);
@@ -92,6 +95,7 @@ const KindId: NextPage<Props> = ({ data }) => {
           type: filterChecked,
           kindId: router.query.kindId,
           productClassId: router.query.productClassId,
+          countryName:router.query.countryName
         },
       },
       undefined,
@@ -110,6 +114,7 @@ const KindId: NextPage<Props> = ({ data }) => {
           type: value,
           kindId: router.query.kindId,
           productClassId: router.query.productClassId,
+          countryName:router.query.countryName
         },
       },
       undefined,
@@ -118,7 +123,11 @@ const KindId: NextPage<Props> = ({ data }) => {
   };
 
   const handleProductClassChange = (id: number) => {
-    setProductClassIdChecked(id);
+    const item = data.productClasses?.find((item) => item.id === id);
+
+    if (item) {
+      setProductClassIdChecked(id);
+    }
     setCurrentPage(1);
     router.push(
       {
@@ -128,6 +137,7 @@ const KindId: NextPage<Props> = ({ data }) => {
           type: router.query.type,
           kindId: router.query.kindId,
           productClassId: id,
+          countryName:router.query.countryName
         },
       },
       undefined,
@@ -149,11 +159,11 @@ const KindId: NextPage<Props> = ({ data }) => {
         <div className="grid wide">
           <div className="row">
             <div className="col l-4 l-o-4 m-4 m-o-4 c-12">
-            {data.kindName && <h2 className="brandName">{data.kindName}</h2>}
+              {data.kindName && <h2 className="brandName">{data.kindName}</h2>}
             </div>
           </div>
         </div>
-        <Brand kindId={+router.query.kindId!} />
+        {/* <Brand kindId={+router.query.kindId!} /> */}
 
         <div className="grid wide">
           <div className="row">
@@ -163,6 +173,7 @@ const KindId: NextPage<Props> = ({ data }) => {
                   {isMobile ? (
                     <select
                       className="select_custom"
+                      value={filterChecked}
                       onChange={(event) =>
                         handleFilterChange(event.target.value)
                       }
@@ -194,6 +205,7 @@ const KindId: NextPage<Props> = ({ data }) => {
                       ))}
                     </div>
                   )}
+
                   <select
                     value={productClassIdChecked}
                     className="select_custom"
@@ -224,34 +236,73 @@ const KindId: NextPage<Props> = ({ data }) => {
                         <div className={styles.productItem}>
                           <div className={styles.productType}>
                             <img src={product.thumbnail} />
-                            <div>{product.class?.name}</div>
+                            {product.salesPercent &&
+                            product.salesPercent > 0 ? (
+                              <div className={styles.salesContainer}>
+                                <h2>{product.salesPercent}%</h2>
+                              </div>
+                            ) : (
+                              <div className={styles.salesContainerNone}>
+                                <h2>{product.salesPercent}%</h2>
+                              </div>
+                            )}
+                            <div className={styles.productClassContainer}>
+                              {product.class?.name}
+                            </div>
                           </div>
                           <div className={styles.productName}>
-                            <h2 className="textCapitalize">{product.productName}</h2>
+                            <h2 className="textCapitalize">
+                              {product.productName}
+                            </h2>
                           </div>
-                          {product.averageRating > 0 ? (
+                          {product.minPrice === product.maxPrice ? (
                             <div className={styles.productNameAndRating}>
+                              <h3 style={{ marginTop: 2 }}>
+                                {MoneyConverter(product.minPrice)}
+                              </h3>
+                            </div>
+                          ) : (
+                            <div className={styles.productNameAndRating}>
+                              <h3>{MoneyConverter(product.minPrice)}</h3>
+                              <span style={{ margin: "0 4px" }}>-</span>
+                              <h3>{MoneyConverter(product.maxPrice)}</h3>
+                            </div>
+                          )}
+                          {product.averageRating > 0 ? (
+                            <>
                               <StarRatings
-                                rating={product.averageRating}
+                                rating={4.5}
                                 starDimension="12px"
                                 starSpacing="1px"
                                 starRatedColor="black"
                               />
-                              <h3>{MoneyConverter(product.priceToDisplay)}</h3>
-                            </div>
+                            </>
                           ) : (
-                            //No
-                            <div className={styles.productNameAndRating}>
-                              <div></div>
-                              <h3>{MoneyConverter(product.priceToDisplay)}</h3>
-                            </div>
+                            <>
+                              <StarRatings
+                                rating={0}
+                                starDimension="12px"
+                                starSpacing="1px"
+                                starRatedColor="black"
+                              />
+                            </>
                           )}
-
                           <div className={styles.paidInfo}>
-                            <h4>Đã bán:{product.sales}</h4>
-                            <h4>Bình luận:{product.commentCount}</h4>
+                            {product.sales && product.sales > 0 ? (
+                              <h4 style={{ color: "black" }}>
+                                Đã bán:{product.sales}
+                              </h4>
+                            ) : (
+                              <h4>Đã bán:{product.sales}</h4>
+                            )}
+                            {product.sales && product.sales > 0 ? (
+                              <h4 style={{ color: "black" }}>
+                                Đánh giá:{product.commentCount}
+                              </h4>
+                            ) : (
+                              <h4>Đánh giá:{product.commentCount}</h4>
+                            )}
                           </div>
-                        
                         </div>
                       </div>
                     ))}
@@ -266,7 +317,7 @@ const KindId: NextPage<Props> = ({ data }) => {
                   className="pagination-bar"
                   currentPage={currentPage}
                   totalCount={products.totalCount || 0}
-                  pageSize={products.pageSize ||0}
+                  pageSize={products.pageSize || 0}
                   onPageChange={(page: number) => handlePageChange(page)}
                 />
               </div>
@@ -275,7 +326,7 @@ const KindId: NextPage<Props> = ({ data }) => {
         </div>
       </div>
       <Footer />
-      {mySpinner && <MySpinner/>}
+      {mySpinner && <MySpinner />}
     </div>
   );
 };
@@ -297,8 +348,10 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     query: GetProductsByKindDocument,
     variables: {
       paginationOptions,
+      countryName:query.countryName || ""
     },
   });
+ 
 
   return {
     props: {

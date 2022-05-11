@@ -1,4 +1,4 @@
-import { ChevronRightIcon } from "@chakra-ui/icons";
+import {  ChevronRightIcon } from "@chakra-ui/icons";
 
 import clsx from "clsx";
 import { GetServerSideProps, NextPage } from "next";
@@ -19,12 +19,18 @@ import {
 import { client } from "../utils/lib/ApolloClient";
 import { MoneyConverter } from "../utils/other/ConvertToMoney";
 import { isMobile } from "react-device-detect";
+import { AMERICA } from "../utils/other/constants";
+import { localSelector } from "../store/reducers/localSlice";
+import { useSelector } from "react-redux";
+
+
 
 interface Props {
   data: ProductKindResponse;
 }
 
 const Index: NextPage<Props> = ({ data }) => {
+  const { countryName } = useSelector(localSelector);
   const StarRatings = dynamic(() => import("react-star-ratings"));
 
   //Server side
@@ -38,16 +44,15 @@ const Index: NextPage<Props> = ({ data }) => {
         {isMobile ? (
           <div className="grid">
             <div className="row">
-            <div className="col c-12">
-              <div className={styles.webInfo}>
-              <ShopInfo />
+              <div className="col c-12">
+                <div className={styles.webInfo}>
+                  <ShopInfo />
+                </div>
+              </div>
+              <div className="col c-12">
+                <WebEvent />
               </div>
             </div>
-            <div className="col c-12">
-            
-                <WebEvent />
-            </div>
-          </div>
           </div>
         ) : (
           // Desktop
@@ -68,6 +73,13 @@ const Index: NextPage<Props> = ({ data }) => {
 
         <div className="grid wide">
           <div className="row">
+            <div className="l-2 l-o-5 m-2 m-o-5 c-6 c-o-3">
+              <div className={clsx("brandName", styles.countryName)}>
+                {countryName}
+              </div>
+            </div>
+          </div>
+          <div className="row">
             <div className={clsx("col l-12 m-12 c-12")}>
               {data.kinds &&
                 data.kinds.map((item) => {
@@ -78,7 +90,15 @@ const Index: NextPage<Props> = ({ data }) => {
                         <div
                           className={styles.loadMore}
                           onClick={() => {
-                            router.push(`/kind/${item.id}`);
+                            const countryNameProps =
+                              router.query.countryName || countryName;
+                            router.push({
+                              pathname: `/kind/${item.id}`,
+                              query: {
+                                kindId: item.id,
+                                countryName: countryNameProps,
+                              },
+                            });
                           }}
                         >
                           <ChevronRightIcon />
@@ -91,8 +111,8 @@ const Index: NextPage<Props> = ({ data }) => {
                             <div className="row">
                               {item.products?.map((product) => (
                                 <div
-                                  className="col l-2-4 m-4 c-6"
                                   key={product.id}
+                                  className="col l-2-4 m-3 c-6"
                                   onClick={() =>
                                     router.push(`/product/${product.id}`)
                                   }
@@ -100,46 +120,88 @@ const Index: NextPage<Props> = ({ data }) => {
                                   <div className={styles.productItem}>
                                     <div className={styles.productType}>
                                       <img src={product.thumbnail} />
-                                      <div>{product.class?.name}</div>
+                                      {product.salesPercent &&
+                                      product.salesPercent > 0 ? (
+                                        <div className={styles.salesContainer}>
+                                          <h2>{product.salesPercent}%</h2>
+                                        </div>
+                                      ) : (
+                                        <div
+                                          className={styles.salesContainerNone}
+                                        >
+                                          <h2>{product.salesPercent}%</h2>
+                                        </div>
+                                      )}
+
+                                      <div
+                                        className={styles.productClassContainer}
+                                      >
+                                        {product.class?.name}
+                                      </div>
                                     </div>
                                     <div className={styles.productName}>
                                       <h2 className="textCapitalize">
                                         {product.productName}
                                       </h2>
                                     </div>
-                                    {product.averageRating > 0 ? (
+
+                                    {product.minPrice === product.maxPrice ? (
                                       <div
                                         className={styles.productNameAndRating}
                                       >
+                                        <h3 style={{ marginTop: 2 }}>
+                                          {MoneyConverter(product.minPrice)}
+                                        </h3>
+                                      </div>
+                                    ) : (
+                                      <div
+                                        className={styles.productNameAndRating}
+                                      >
+                                        <h3>
+                                          {MoneyConverter(product.minPrice)}
+                                        </h3>
+                                        <span style={{ margin: "0 4px" }}>
+                                          -
+                                        </span>
+                                        <h3>
+                                          {MoneyConverter(product.maxPrice)}
+                                        </h3>
+                                      </div>
+                                    )}
+                                    {product.averageRating > 0 ? (
+                                      <>
                                         <StarRatings
                                           rating={4.5}
                                           starDimension="12px"
                                           starSpacing="1px"
                                           starRatedColor="black"
                                         />
-                                        <h3>
-                                          {MoneyConverter(
-                                            product.priceToDisplay
-                                          )}
-                                        </h3>
-                                      </div>
+                                      </>
                                     ) : (
-                                      //No
-                                      <div
-                                        className={styles.productNameAndRating}
-                                      >
-                                        <div></div>
-                                        <h3>
-                                          {MoneyConverter(
-                                            product.priceToDisplay
-                                          )}
-                                        </h3>
-                                      </div>
+                                      <>
+                                        <StarRatings
+                                          rating={0}
+                                          starDimension="12px"
+                                          starSpacing="1px"
+                                          starRatedColor="black"
+                                        />
+                                      </>
                                     )}
-
                                     <div className={styles.paidInfo}>
-                                      <h4>Đã bán:{product.sales}</h4>
-                                      <h4>Bình luận:{product.commentCount}</h4>
+                                      {product.sales && product.sales > 0 ? (
+                                        <h4 style={{ color: "black" }}>
+                                          Đã bán:{product.sales}
+                                        </h4>
+                                      ) : (
+                                        <h4>Đã bán:{product.sales}</h4>
+                                      )}
+                                      {product.sales && product.sales > 0 ? (
+                                        <h4 style={{ color: "black" }}>
+                                          Đánh giá:{product.commentCount}
+                                        </h4>
+                                      ) : (
+                                        <h4>Đánh giá:{product.commentCount}</h4>
+                                      )}
                                     </div>
                                   </div>
                                 </div>
@@ -161,14 +223,16 @@ const Index: NextPage<Props> = ({ data }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const countryName = query.countryName || AMERICA;
   const { data } = await client.query<GetProductsForIndexQuery>({
     query: GetProductsForIndexDocument,
     variables: {
-      take: 5,
+      take: 8,
+      countryName,
     },
   });
-  
+
   return {
     props: {
       data: data.getProductsForIndex,

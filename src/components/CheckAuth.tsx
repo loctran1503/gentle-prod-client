@@ -8,18 +8,16 @@ import {
   setIsHidden,
   setLoading,
   setType,
-  setUserAvatar,
+  setUserAvatar
 } from "../store/reducers/authSlice";
 import {
   setBillProductsFromLocal,
-  setProductBrandsProps,
-  setProductKindsProps,
+  setProductBrandsProps
 } from "../store/reducers/localSlice";
-import { USER_ID_NULL } from "../utils/other/constants";
+
 import JwtManager from "../utils/other/JwtManager";
 import {
-  ProductBrandProps,
-  ProductKindProps,
+  ProductBrandProps
 } from "../utils/type/redux/reduxType";
 import FacebookMessenger from "./FacebookMessenger";
 import MySpinner from "./MySpinner";
@@ -52,14 +50,14 @@ const CheckAuth = ({ children }: { children: ReactNode }) => {
             localBillProducts: list,
           },
         });
-
+        console.log(res.data?.getWebData)
         switch (true) {
-          case res.data?.getWebData.code === 500 &&
-            res.data.getWebData.message === USER_ID_NULL:
-            localStorage.removeItem("SESSION_TOKEN");
+          case res.data?.getWebData.code === 999:
+
             dispatch(setLoading(false));
             break;
           case res.data?.getWebData.code === 200:
+            console.log(res.data?.getWebData)
             if (res.data?.getWebData.type === "admin") {
               dispatch(setType(res.data?.getWebData.type!));
             } else {
@@ -92,17 +90,11 @@ const CheckAuth = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (
-      data?.getWebData.kinds &&
+      data &&
       data.getWebData.brands &&
       data.getWebData.products
     ) {
-      const kinds: ProductKindProps[] = data.getWebData.kinds.map((item) => {
-        const kindItem: ProductKindProps = {
-          id: item.id,
-          name: item.name,
-        };
-        return kindItem;
-      });
+     
       const brands: ProductBrandProps[] = data.getWebData.brands.map((item) => {
         const kindItem: ProductBrandProps = {
           id: item.id,
@@ -111,8 +103,6 @@ const CheckAuth = ({ children }: { children: ReactNode }) => {
 
         return kindItem;
       });
-
-      dispatch(setProductKindsProps(kinds));
       dispatch(setProductBrandsProps(brands));
       dispatch(setBillProductsFromLocal(data.getWebData.products));
     }

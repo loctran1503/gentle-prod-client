@@ -1,0 +1,11 @@
+query AdminGetProductClasses{
+  adminGetProductClasses{
+    code
+    success
+    message
+    classes{
+      id
+      name
+    }
+  }
+}

@@ -1,3 +1,9 @@
+.heading{
+  background-color: black;
+  color: white;
+  margin: 20px 0;
+  padding: 4px 20px;
+}
 .paymentContainer {
   margin-bottom: 100px;
 }
@@ -7,6 +13,7 @@
 }
 .paymentContainer h2 {
   font-size: 1.2rem;
+  
 }
 .userInfo {
   margin: 8px;
@@ -75,6 +82,7 @@
 .productInfo img {
   height: 80px;
   width: 80px;
+  margin-right: 8px;
 }
 .productNameAndType {
   max-width: 50%;
@@ -147,6 +155,11 @@
   padding: 12px 20px;
   font-size: 1.2rem;
 }
+.headingPaymentContainer{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .typePaymentBody{
   border: 1px solid var(--border-color);
   
@@ -169,12 +182,25 @@
 .typePaymentInput{
   margin-right: 8px;
 }
+.detailPriceRuleContainer{
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+  transition: all 0.4s ease-in;
+}
+.detailPriceRuleContainer:hover{
+  transform: translateX(4px);
+}
 
 
 .typePaymentNotice{
   font-size: 0.9rem;
-  color: var(--grey-color);
-  margin-left: 24px;
+  cursor: pointer;
+  margin-bottom: 4px;
+ 
+  text-decoration: underline;
+  margin-top: 4px;
+  margin-right: 4px;
 }
 .infoBank{
   background-color: var(--blur-color);

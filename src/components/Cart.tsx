@@ -13,7 +13,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../assets/css/components/cart.module.css";
 import emptyCart from "../assets/images/EmptyCart.png";
@@ -21,12 +21,13 @@ import {
   BillProductInput,
 
 } from "../generated/graphql";
-import { PaymentProps } from "../pages/payment";
+
 import {
   localSelector,
   setBillProductsFromLocal, setPaymentProps
 } from "../store/reducers/localSlice";
 import { MoneyConverter } from "../utils/other/ConvertToMoney";
+import { PaymentProps } from "../utils/type/redux/reduxType";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -139,7 +140,7 @@ const Cart = () => {
   const handleToPayment = () => {
     const props: PaymentProps = {
       listCart: billProductsFromLocal,
-      totalPrice,
+ 
     };
     dispatch(setPaymentProps(props));
 
@@ -196,7 +197,7 @@ const Cart = () => {
                             <img src={item.productThumbnail} />
                             <div className={styles.itemInfo}>
                               <div>
-                                <h3>{item.productName}</h3>
+                                <h3 className="textCapitalize">{item.productName}</h3>
                                 <h4>{item.productType}</h4>
                               </div>
                               <div className={styles.amount}>
@@ -265,4 +266,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default memo(Cart);

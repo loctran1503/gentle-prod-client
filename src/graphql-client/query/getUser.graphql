@@ -8,7 +8,7 @@ query getUser{
       userAvatar
       confirmWaitingCount
     	packedCount
-      moneyCount
+      moneyDepot
       deliveringCount
       introduceCode
       bills{

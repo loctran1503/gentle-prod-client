@@ -10,13 +10,13 @@ import Footer from "../../components/Footer";
 import MySpinner from "../../components/MySpinner";
 import Navbar from "../../components/Navbar";
 import {
-  PriceInput, ProductInput,
-
+  PriceInput,
+  ProductInput,
   useAdminGetKindBrandClassQuery,
-
-  useCreateProductMutation
+  useCreateProductMutation,
 } from "../../generated/graphql";
 import { authSelector } from "../../store/reducers/authSlice";
+import { AMERICA, KOREA } from "../../utils/other/constants";
 import { MoneyConverter } from "../../utils/other/ConvertToMoney";
 
 export interface PriceFieldsProps {
@@ -24,32 +24,30 @@ export interface PriceFieldsProps {
   type: string;
   price: number;
   status: number;
+  salesPercent: number;
 }
-
 
 const createProduct = () => {
   const router = useRouter();
 
-//CheckIsAdmin
-const { type, isAuthenticated, isLoading } = useSelector(authSelector);
-const [localLoading,setLocalLoading] = useState(true)
+  //CheckIsAdmin
+  const { type, isAuthenticated, isLoading } = useSelector(authSelector);
+  const [localLoading, setLocalLoading] = useState(true);
 
-useEffect(() => {
- 
-  if (
-    (!isLoading && !isAuthenticated) ||
-    (!isLoading && isAuthenticated && type !== "admin")
-  )
-    router.push("/page-404");
-    else{
-      setLocalLoading(false)
+  useEffect(() => {
+    if (
+      (!isLoading && !isAuthenticated) ||
+      (!isLoading && isAuthenticated && type !== "admin")
+    )
+      router.push("/page-404");
+    else {
+      setLocalLoading(false);
     }
-}, []);
+  }, []);
 
   const [createNewProduct] = useCreateProductMutation();
   const { data } = useAdminGetKindBrandClassQuery();
 
-  
   const [product, setProduct] = useState<ProductInput>({
     productName: "",
     thumbnail: "",
@@ -57,13 +55,11 @@ useEffect(() => {
     description: "",
     imgDescription: [],
     brandId: 0,
-    kindId:0,
-    classId:0,
-    priceToDisplay: 0,
+    kindId: 0,
+    classId: 0,
+    countryName: AMERICA,
   });
 
-  
- 
   const handleSubmit = async () => {
     const graphqlResult = await createNewProduct({
       variables: {
@@ -73,13 +69,16 @@ useEffect(() => {
 
     if (graphqlResult.data?.createProduct.success)
       router.push("/admin/dashboard");
+    if (graphqlResult.errors) console.log(graphqlResult.errors);
+    if (!graphqlResult.data?.createProduct.success)
+      alert(graphqlResult!.data!.createProduct.message);
   };
 
   //Img Description
   const handleImgDescription = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setLocalLoading(true)
+    setLocalLoading(true);
     Promise.all(
       Array.from(event.target.files!).map(async (file) => {
         const formData = new FormData();
@@ -93,7 +92,7 @@ useEffect(() => {
       })
     ).then((imgList) => {
       setProduct({ ...product, imgDescription: imgList });
-      setLocalLoading(false)
+      setLocalLoading(false);
     });
   };
   //Thumbnail
@@ -116,7 +115,7 @@ useEffect(() => {
 
   //Price Field
   const [priceFields, setPriceFields] = useState<PriceFieldsProps[]>([
-    { id: uuidv4(), type: "", price: 0, status: 1 },
+    { id: uuidv4(), type: "", price: 0, status: 1, salesPercent: 0 },
   ]);
 
   useEffect(() => {
@@ -126,6 +125,7 @@ useEffect(() => {
         type: field.type,
         price: field.price,
         status: field.status,
+        salesPercent: field.salesPercent,
       });
     });
     setProduct({ ...product, prices: newPriceList });
@@ -134,7 +134,7 @@ useEffect(() => {
   const handleAddFields = () => {
     setPriceFields([
       ...priceFields,
-      { id: uuidv4(), type: "", price: 0, status: 1 },
+      { id: uuidv4(), type: "", price: 0, status: 1, salesPercent: 0 },
     ]);
   };
 
@@ -165,12 +165,31 @@ useEffect(() => {
             const status = +event!.target.value;
             field.status = status;
             break;
+          case "salesPercent":
+            const salesPercent = +event!.target.value;
+            field.salesPercent = salesPercent;
+            break;
         }
       }
       return field;
     });
+
     setPriceFields(newPriceFields);
   };
+  useEffect(() => {
+    if (data) {
+      const kindOne = data.adminGetKindBrandClass.kinds![0];
+      const brandOne = data.adminGetKindBrandClass.brands![0];
+      const classOne = data.adminGetKindBrandClass.classes![0];
+      if (kindOne && brandOne && classOne)
+        setProduct({
+          ...product,
+          kindId: kindOne.id,
+          classId: classOne.id,
+          brandId: brandOne.id,
+        });
+    }
+  }, [data]);
   return (
     <div>
       <Navbar />
@@ -179,12 +198,33 @@ useEffect(() => {
           <div className="row">
             <div className="col l-12 m-12 c-12">
               <div className={styles.container}>
-                {/* Kind */}
-                <Select  placeholder="Tên Kind"
+                {/* Country */}
+                <Select
                   fontFamily="Roboto"
                   fontSize="1rem"
                   size="sm"
-                  className={clsx("boxShadowNone", styles.input)} onChange={(e) => setProduct({...product,kindId:+e.target.value})} value={product.kindId}>
+                  className={clsx("boxShadowNone", styles.input)}
+                  value={product.countryName}
+                  onChange={(e) =>
+                    setProduct({ ...product, countryName: e.target.value })
+                  }
+                >
+                  <option value={AMERICA}>{AMERICA}</option>
+                  <option value={KOREA}>{KOREA}</option>
+                 
+                </Select>
+                {/* Kind */}
+                <Select
+                  placeholder="Tên Kind"
+                  fontFamily="Roboto"
+                  fontSize="1rem"
+                  size="sm"
+                  className={clsx("boxShadowNone", styles.input)}
+                  onChange={(e) =>
+                    setProduct({ ...product, kindId: +e.target.value })
+                  }
+                  value={product.kindId}
+                >
                   {data &&
                     data.adminGetKindBrandClass.kinds?.map((item) => (
                       <option value={item.id} key={item.id}>
@@ -193,13 +233,24 @@ useEffect(() => {
                     ))}
                 </Select>
                 {/* Class */}
-                <Select  placeholder="Tên Class"
+                <Select
+                  placeholder="Tên Class"
                   fontFamily="Roboto"
                   fontSize="1rem"
                   size="sm"
-                  className={clsx("boxShadowNone", styles.input)} onChange={(e) => setProduct({...product,classId:+e.target.value})} value={product.classId}>
-                  {data?.adminGetKindBrandClass.classes?.map(item =>{
-                    if(item.kind.id === product.kindId) return <option value={item.id} key={item.id}>{item.name}</option>
+                  className={clsx("boxShadowNone", styles.input)}
+                  onChange={(e) =>
+                    setProduct({ ...product, classId: +e.target.value })
+                  }
+                  value={product.classId}
+                >
+                  {data?.adminGetKindBrandClass.classes?.map((item) => {
+                    if (item.kind.id === product.kindId)
+                      return (
+                        <option value={item.id} key={item.id}>
+                          {item.name}
+                        </option>
+                      );
                   })}
                 </Select>
 
@@ -215,8 +266,13 @@ useEffect(() => {
                     setProduct({ ...product, brandId: +event.target.value })
                   }
                 >
-                 {data?.adminGetKindBrandClass.brands?.map(item =>{
-                    if(item.kind.id === product.kindId) return <option value={item.id} key={item.id}>{item.brandName}</option>
+                  {data?.adminGetKindBrandClass.brands?.map((item) => {
+                
+                      return (
+                        <option value={item.id} key={item.id}>
+                          {item.brandName}
+                        </option>
+                      );
                   })}
                 </Select>
 
@@ -244,7 +300,7 @@ useEffect(() => {
                   <h2>Type</h2>
                   <h2>Price</h2>
                   <h3>Status</h3>
-                  <h3> </h3>
+                  <h3>SalesPercent</h3>
                 </div>
                 {priceFields.map((field) => (
                   <div key={field.id}>
@@ -286,6 +342,17 @@ useEffect(() => {
                             onFieldChange(field.id, event);
                           }}
                         />
+                        <Input
+                          name="salesPercent"
+                          value={field.salesPercent!}
+                          placeholder="Phần trăm giảm"
+                          className={styles.inputPrice}
+                          onChange={(
+                            event: React.ChangeEvent<HTMLInputElement>
+                          ) => {
+                            onFieldChange(field.id, event);
+                          }}
+                        />
 
                         <Button
                           colorScheme="red"
@@ -313,19 +380,7 @@ useEffect(() => {
                     onChange={handleImgDescription}
                   />
                 </div>
-                <Input
-                  style={{ marginTop: 20 }}
-                  placeholder="PriceToDisplay"
-                  type="text"
-                  value={product.priceToDisplay}
-                  onChange={(event) => {
-                    setProduct({
-                      ...product,
-                      priceToDisplay: +event.target.value,
-                    });
-                  }}
-                />
-                <h1>{MoneyConverter(product.priceToDisplay)}</h1>
+         
 
                 <div className={styles.productDescription}>
                   <h2>Description</h2>
@@ -350,7 +405,7 @@ useEffect(() => {
         </div>
       </div>
       <Footer />
-      {localLoading && <MySpinner/>}
+      {localLoading && <MySpinner />}
     </div>
   );
 };

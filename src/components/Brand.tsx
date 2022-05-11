@@ -1,30 +1,25 @@
-import { useMediaQuery } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import Carousel from "nuka-carousel";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styles from "../assets/css/components/brand.module.css";
-import { useGetBrandsQuery } from "../generated/graphql";
 
-interface BrandProps {
-  kindId: number;
-}
 
-const Brand = ({ kindId }: BrandProps) => {
-  const { data } = useGetBrandsQuery({
-    variables: {
-      kindId,
-    },
-  });
-  const [brandToShowAmount, setBrandToShowAmount] = useState<number>(6);
-  const router = useRouter();
-  const [isMobile] = useMediaQuery("(max-width: 739px)");
-  const [isTablet] = useMediaQuery("(max-width: 1240px)");
 
-  useEffect(() => {
-    if (isMobile) setBrandToShowAmount(2);
-    else if (isTablet) setBrandToShowAmount(4);
-    else setBrandToShowAmount(6);
-  }, [isMobile, isTablet]);
+
+const Brand = () => {
+  // const { data } = useGetBrandsQuery({
+  //   variables: {
+  //     kindId,
+  //   },
+  // });
+  // const [brandToShowAmount, setBrandToShowAmount] = useState<number>(6);
+  // const router = useRouter();
+  // const [isMobile] = useMediaQuery("(max-width: 739px)");
+  // const [isTablet] = useMediaQuery("(max-width: 1240px)");
+
+  // useEffect(() => {
+  //   if (isMobile) setBrandToShowAmount(2);
+  //   else if (isTablet) setBrandToShowAmount(4);
+  //   else setBrandToShowAmount(6);
+  // }, [isMobile, isTablet]);
 
   return (
     <div className={styles.brandContainer}>
@@ -35,7 +30,7 @@ const Brand = ({ kindId }: BrandProps) => {
               <h2 className="brandName">{data?.getBrands.}</h2>
             </div>
           </div> */}
-          <div className="col l-12 m-12 c-12">
+          {/* <div className="col l-12 m-12 c-12">
             <div className={styles.heading}>brands</div>
             <div className={styles.brandBody}>
               <Carousel
@@ -70,7 +65,7 @@ const Brand = ({ kindId }: BrandProps) => {
                 ))}
               </Carousel>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

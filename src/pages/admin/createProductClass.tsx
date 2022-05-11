@@ -28,14 +28,21 @@ useEffect(() => {
   const [adminCreateProductClass] = useAdminCreateProductClassMutation();
   const { data } = useAdminGetProductKindsQuery();
   const [name, setName] = useState("");
-  const [id,setId] = useState(1)
-console.log(id)
+  const [kindId,setKindId] = useState(0)
+
+    useEffect(() =>{
+      if(data &&
+        data.adminGetProductKinds.kinds){
+          setKindId(data.adminGetProductKinds.kinds[0].id)
+        }
+    },[data])
+
   // handle
   const handleSubmit = async () => {
     const res = await adminCreateProductClass({
       variables: {
         name,
-        id
+        id:kindId
       },
     });
     if (res.errors) alert(res.errors);
@@ -50,7 +57,7 @@ console.log(id)
         <div className="col l-6 l-o-3 m-12 c-12">
           <div className={styles.containerProductKindAndClass}>
             <h1 className={styles.headingProductKindAndClass}>Product Class</h1>
-            <Select  value={id} onChange={event  => setId(+event.target.value)}>
+            <Select  value={kindId} onChange={event  => setKindId(+event.target.value)}>
               {data &&
                 data.adminGetProductKinds.kinds?.map((item) => (
                   <option key={item.id} value={item.id}>{item.name}</option>

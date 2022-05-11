@@ -71,6 +71,17 @@ background-color: var(--blur-color);
      
       padding: 10px 20px;
   }
+  .imageSuccess{
+      margin-top: 12px;
+     
+  }
+  .imageSuccess img{
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      width: 200px;
+      height: 200px;
+      border-radius: 8px;
+  }
   .userInfo{
       margin-top: 20px;
   }
@@ -110,4 +121,13 @@ background-color: var(--blur-color);
   }
   .footer.red{
     color: red;
+}
+.statusContainer{
+    display: flex;
+    align-items: center;
+}
+.statusContainer h4{
+    color: var(--grey-color);
+    font-size: 0.9rem;
+    margin-left: 10px;
 }

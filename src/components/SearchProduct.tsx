@@ -3,7 +3,7 @@ import { useOutsideClick, useToast } from "@chakra-ui/react";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, { memo, ReactNode, useEffect, useRef, useState } from "react";
 import styles from "../assets/css/components/searchProduct.module.css";
 import { useGetProductsBySearchInputLazyQuery } from "../generated/graphql";
 import useDebounced from "../utils/hook/useDebounced";
@@ -148,4 +148,4 @@ const SearchProduct = () => {
   );
 };
 
-export default SearchProduct;
+export default memo(SearchProduct);

@@ -1,33 +1,40 @@
-query GetProductsByKind($paginationOptions:PaginationOptionsInput!){
-  getProductsByKind(paginationOptions:$paginationOptions){
+query GetProductsByKind(
+  $paginationOptions: PaginationOptionsInput!
+  $countryName: String!
+) {
+  getProductsByKind(
+    paginationOptions: $paginationOptions
+    countryName: $countryName
+  ) {
     code
     success
     message
     pageSize
     totalCount
     kindId
-   
     kindName
-      
-     productClasses{
-       id
+    productClasses {
+      id
       name
     }
-    products{
+    products {
       id
       productName
       priceToDisplay
       commentCount
       averageRating
+      minPrice
+      maxPrice
+      salesPercent
       sales
       thumbnail
-      prices{
+      prices {
         id
         type
         price
         status
       }
-      class{
+      class {
         name
       }
     }

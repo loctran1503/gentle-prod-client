@@ -1,16 +1,15 @@
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
-
 import clsx from "clsx";
-import Link from "next/link";
+
 import { useRouter } from "next/router";
 import React, { ReactNode, useEffect, useState } from "react";
-import { isMobile } from 'react-device-detect';
-import { useSelector } from "react-redux";
+import { isMobile } from "react-device-detect";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "../assets/css/components/navbar.module.css";
 import { authSelector } from "../store/reducers/authSlice";
-import { localSelector } from "../store/reducers/localSlice";
-import { charList } from "../utils/other/constants";
+import { localSelector, setCountryName } from "../store/reducers/localSlice";
+import { AMERICA, charList, KOREA } from "../utils/other/constants";
 import { ProductBrandProps } from "../utils/type/redux/reduxType";
 import Cart from "./Cart";
 import { Login } from "./Login";
@@ -23,28 +22,23 @@ const Navbar = () => {
   const { isAuthenticated, userAvatar, isLoading, type } =
     useSelector(authSelector);
   const { brands } = useSelector(localSelector);
+  const dispatch = useDispatch();
   const [brandList, setBrandList] = useState<ProductBrandProps[]>(brands);
   const [brandCharQuery, setBrandCharQuery] = useState("ALL");
 
-
-
-
   //brandsList
- 
+
   useEffect(() => {
     if (brandCharQuery !== "ALL") {
-      
       let tempList: ProductBrandProps[] = brands.filter((item) =>
         item.name.startsWith(brandCharQuery)
       );
 
       setBrandList(tempList);
-    
     } else {
       setBrandList(brands);
- 
     }
-  }, [brandCharQuery,brands]);
+  }, [brandCharQuery, brands]);
 
   const router = useRouter();
 
@@ -75,8 +69,6 @@ const Navbar = () => {
 
   if (isLoading) return <MySpinner />;
 
-
-
   return (
     <div>
       {isMobile ? (
@@ -85,7 +77,6 @@ const Navbar = () => {
             <div className="grid wide">
               <div className={styles.navbar}>
                 <div className="row">
-            
                   <div className="col c-12">
                     <div className={clsx(styles.userControlMobile)}>
                       {/* Left */}
@@ -96,17 +87,16 @@ const Navbar = () => {
                           </div>
                         </div>
                         <div className="c-6">
-                        <div className={styles.mobileCenter}>
-                        <h1
-                      className={styles.appName}
-                      onClick={() => {
-                        router.push("/");
-                      }}
-                    >
-                      GENTLE
-                    </h1>
-                        </div>
-
+                          <div className={styles.mobileCenter}>
+                            <h1
+                              className={styles.appName}
+                              onClick={() => {
+                                router.push("/");
+                              }}
+                            >
+                              GENTLE
+                            </h1>
+                          </div>
                         </div>
                         <div className="c-3">
                           {/* Right */}
@@ -151,9 +141,50 @@ const Navbar = () => {
                   </div>
                   <div className="col l-6 m-8 c-0">
                     <div className={styles.navbarCategory}>
-                      <Link href="/">
-                        <h3 className={styles.navbarCategoryItem}>Trang chủ</h3>
-                      </Link>
+                      <h3
+                        className={styles.navbarCategoryItem}
+                        onClick={() =>
+                          {
+                            dispatch(setCountryName(AMERICA))
+                            router.push({
+                              pathname: "/",
+                              query:{countryName:AMERICA}
+                            })
+
+                          }
+                          
+                        }
+                      >
+                        {AMERICA}
+                      </h3>
+                      <h3
+                        className={styles.navbarCategoryItem}
+                        onClick={() =>
+                        {
+                          dispatch(setCountryName(KOREA))
+                          router.push({
+                            pathname: "/",
+                            query:{countryName:KOREA}
+                          })
+                        }
+                        }
+                      >
+                        {KOREA}
+                      </h3>
+                      {/* <h3
+                        className={styles.navbarCategoryItem}
+                        onClick={() =>
+                          {
+                            dispatch(setCountryName(VIETNAM))
+                            router.push({
+                              pathname: "/",
+                          
+                            })
+                          }
+                        }
+                      >
+                        {VIETNAM}
+                      </h3> */}
 
                       <div className={styles.categorySelect}>
                         <div
@@ -169,7 +200,7 @@ const Navbar = () => {
                           <div className="row">
                             <div className="col l-12 m-12">
                               <div className={styles.brandsFilter}>
-                                {charList.map((item,index) => (
+                                {charList.map((item, index) => (
                                   <div
                                     className={clsx(
                                       styles.brandFilterItem,
@@ -190,11 +221,10 @@ const Navbar = () => {
                             <div className="row">
                               {brandList.length > 0 ? (
                                 <>
-                                  {brandList.map((item,index) => (
-                                    <div className="col l-3 m-3"  key={index}>
+                                  {brandList.map((item, index) => (
+                                    <div className="col l-3 m-3" key={index}>
                                       <div
                                         className={styles.categoryItem}
-                                       
                                         onClick={() => {
                                           router.push({
                                             pathname: `/brand/${item.id}`,

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { BillProductInput } from "../../generated/graphql";
+import { AMERICA } from "../../utils/other/constants";
 import {
   EditProductPriceProps,
   LocalProps,
@@ -7,34 +8,30 @@ import {
   ProductBrandProps,
   ProductInCommentProps,
   ProductKindProps,
-  WriteCommentProps
+  WriteCommentProps,
 } from "../../utils/type/redux/reduxType";
 import { RootState } from "../index";
 
-
-
 const initialState: LocalProps = {
- 
+
   writeCommentProps: null,
   productInCommentProps: null,
   paymentProps: null,
-  editProductPriceProps:null,
-  countProps:0,
-  kinds:[],
-  brands:[],
-  billProductsFromLocal:[]
-  // Kind and Brand
-
+  editProductPriceProps: null,
+  countProps: 0,
+  kinds: [],
+  brands: [],
+  billProductsFromLocal: [],
+  countryName:AMERICA
 };
-
 
 const localSlice = createSlice({
   name: "local",
   initialState,
   reducers: {
     setCountProps(state, action: PayloadAction<number>) {
-        state.countProps = action.payload;
-      },
+      state.countProps = action.payload;
+    },
     setWriteCommentProps(
       state,
       action: PayloadAction<WriteCommentProps | null>
@@ -50,7 +47,10 @@ const localSlice = createSlice({
     setPaymentProps(state, action: PayloadAction<PaymentProps | null>) {
       state.paymentProps = action.payload;
     },
-    setEditProductPriceProps(state, action: PayloadAction<EditProductPriceProps | null>) {
+    setEditProductPriceProps(
+      state,
+      action: PayloadAction<EditProductPriceProps | null>
+    ) {
       state.editProductPriceProps = action.payload;
     },
     // kind and brand
@@ -60,13 +60,18 @@ const localSlice = createSlice({
     setProductBrandsProps(state, action: PayloadAction<ProductBrandProps[]>) {
       state.brands = action.payload;
     },
-    setBillProductsFromLocal(state,action : PayloadAction<BillProductInput[]>){
-      state.billProductsFromLocal = action.payload
-  
-    }
+    setBillProductsFromLocal(state, action: PayloadAction<BillProductInput[]>) {
+      state.billProductsFromLocal = action.payload;
+    },
+    setCountryName(state, action: PayloadAction<string>) {
+      if(action.payload!==""){
+        state.countryName = action.payload;
+      }
+    },
+   
   },
   // extraReducers: (builder) => {
-    
+
   // },
 });
 
@@ -80,6 +85,8 @@ export const {
   setCountProps,
   setProductKindsProps,
   setProductBrandsProps,
-  setBillProductsFromLocal
+  setBillProductsFromLocal,
+  setCountryName
+
 } = localSlice.actions;
 export default localReducer;

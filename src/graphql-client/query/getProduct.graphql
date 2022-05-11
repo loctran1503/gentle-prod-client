@@ -11,14 +11,20 @@ query GetProduct($productId: ID!) {
       imageList
       description
       priceToDisplay
+      otherInfo
       kind {
         id
         name
       }
+      country{
+        countryName
+      }
       prices {
-        id
+        id 
         type
         price
+        salesPercent
+        priceAfterDiscount
         status
       }
       brand {

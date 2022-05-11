@@ -33,23 +33,29 @@ export const client = new ApolloClient({
     typePolicies: {
       Query: {
         fields: {
-          getProducts: {
+          getUser: {
             keyArgs: false,
             merge(_, incoming) {
-              return incoming.products;
+              return incoming;
+            },
+          },
+          getProduct: {
+            keyArgs: false,
+            merge(_, incoming) {
+              return incoming.product;
             },
           },
           getProductsForIndex:{
             keyArgs: false,
             merge(_, incoming) {
-              console.log(incoming)
+             
               return incoming.products;
             },
           },
           getBrandWithProducts:{
             keyArgs: false,
             merge(_, incoming) {
-              console.log(incoming)
+          
               return incoming.products;
             },
           },

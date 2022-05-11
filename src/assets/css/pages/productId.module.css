@@ -64,8 +64,9 @@
 
 .imgContainer img{
     cursor: pointer;
-    height: auto;
+    height: 360px;
     width: 100%;
+    object-fit: cover;
 }
 .imgOther{
     
@@ -170,21 +171,30 @@ margin-top: 20px;
     border-bottom: none;
 }
 
-.totalPrice{
+.totalPriceContainer{
+    display: flex;
+    align-items: center;
     margin: 14px 0;
     color: black;
     padding: 8px 0;
-    font-size: 1.1rem;
     justify-content: space-between;
     height: 100%;
-    font-weight: 500;
-    font-size: 1.4rem;
-    font-family: "Roboto";
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
-    
-   
 }
+.totalPrice{
+    font-weight: 450;
+    font-size: 1.3rem;
+    font-family: "Roboto";
+}
+.priceBeforeDiscount{
+    font-weight: 400;
+    font-size: 1rem;
+    font-family: "Roboto";
+    color: var(--grey-color);
+    text-decoration: line-through;
+}
+
 .totalPriceIcon{
     margin-left: 12px;
     color: #38A169;
@@ -360,3 +370,18 @@ display: flex;
     text-align: center;
     margin-top: 40px;
 }
+.btnSliderLeft{
+  width: 100%;
+    z-index: 100;
+    margin-left: -50%;
+   
+    font-size: 2rem;
+}
+.btnSliderRight{
+    width: 100%;
+      z-index: 100;
+margin-left: 50%;
+     
+
+      font-size: 2rem;
+  }

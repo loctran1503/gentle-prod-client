@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import styles from "../assets/css/components/localLoading.module.css";
 const LocalLoading = () => {
   return (
@@ -11,4 +11,4 @@ const LocalLoading = () => {
   );
 };
 
-export default LocalLoading;
+export default memo(LocalLoading);

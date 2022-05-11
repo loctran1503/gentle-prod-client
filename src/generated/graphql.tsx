@@ -74,6 +74,7 @@ export type BillInput = {
 export type BillProduct = {
   __typename?: 'BillProduct';
   bill: Bill;
+  countryNameForDeliveryPrice?: Maybe<Scalars['String']>;
   id: Scalars['Float'];
   priceIdForLocal?: Maybe<Scalars['Float']>;
   productAmount: Scalars['Float'];
@@ -84,6 +85,7 @@ export type BillProduct = {
 };
 
 export type BillProductInput = {
+  countryNameForDeliveryPrice?: InputMaybe<Scalars['String']>;
   priceIdForLocal?: InputMaybe<Scalars['Float']>;
   productAmount: Scalars['Float'];
   productName: Scalars['String'];
@@ -104,9 +106,8 @@ export type BillResponse = IResponse & {
 export type Brand = {
   __typename?: 'Brand';
   brandName: Scalars['String'];
-  description: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
   id: Scalars['Float'];
-  kind: ProductKind;
   productClasses: Array<ProductClass>;
   products?: Maybe<Array<Product>>;
   thumbnail: Scalars['String'];
@@ -114,8 +115,6 @@ export type Brand = {
 
 export type BrandInput = {
   brandName: Scalars['String'];
-  description: Scalars['String'];
-  kindId: Scalars['Float'];
   productClassId: Scalars['Float'];
   thumbnail: Scalars['String'];
 };
@@ -152,6 +151,14 @@ export type CommentResponse = IResponse & {
   comments?: Maybe<Array<UserComment>>;
   message?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+};
+
+export type Country = {
+  __typename?: 'Country';
+  countryName: Scalars['String'];
+  id: Scalars['Float'];
+  kind?: Maybe<Array<ProductKind>>;
+  products?: Maybe<Array<Product>>;
 };
 
 export type Customer = {
@@ -234,35 +241,14 @@ export type MoneyBonus = {
   description: Scalars['String'];
   id: Scalars['Float'];
   moneyNumber: Scalars['Float'];
-  type: Scalars['String'];
   user: User;
 };
-
-export type MoneyBonusInput = {
-  description: Scalars['String'];
-  moneyNumber: Scalars['Float'];
-  type: MoneyBonusType;
-  userId: Scalars['Float'];
-};
-
-export type MoneyBonusResponse = IResponse & {
-  __typename?: 'MoneyBonusResponse';
-  code: Scalars['Float'];
-  message?: Maybe<Scalars['String']>;
-  moneyBonus?: Maybe<MoneyBonus>;
-  moneyBonuses?: Maybe<Array<MoneyBonus>>;
-  success: Scalars['Boolean'];
-};
-
-export enum MoneyBonusType {
-  Get = 'GET',
-  Take = 'TAKE'
-}
 
 export type Mutation = {
   __typename?: 'Mutation';
   adminAddClassToBrand: SimpleResponse;
   adminCreateBrand: BrandResponse;
+  adminCreateCountry: SimpleResponse;
   adminCreateEvent: MyEventResponse;
   adminCreateFeedback: SimpleResponse;
   adminCreateOrEditPrice: PriceResponse;
@@ -278,7 +264,6 @@ export type Mutation = {
   createAdmin: UserResponse;
   createBill: BillResponse;
   createComments: CommentResponse;
-  createMoneyField: MoneyBonusResponse;
   createProduct: ProductResponse;
   createTakeMoneyField: SimpleResponse;
   handleBillCancel: BillResponse;
@@ -296,6 +281,11 @@ export type MutationAdminAddClassToBrandArgs = {
 
 export type MutationAdminCreateBrandArgs = {
   brandInput: BrandInput;
+};
+
+
+export type MutationAdminCreateCountryArgs = {
+  countryName: Scalars['String'];
 };
 
 
@@ -359,6 +349,7 @@ export type MutationAdminTakeMoneyFieldCancelArgs = {
 
 export type MutationAdminTakeMoneyFieldCompletedArgs = {
   fieldId: Scalars['Float'];
+  imageSuccess: Scalars['String'];
 };
 
 
@@ -379,11 +370,6 @@ export type MutationCreateBillArgs = {
 
 export type MutationCreateCommentsArgs = {
   commentInput: CommentInput;
-};
-
-
-export type MutationCreateMoneyFieldArgs = {
-  fieldInput: MoneyBonusInput;
 };
 
 
@@ -499,7 +485,9 @@ export type Price = {
   id: Scalars['Float'];
   isGift?: Maybe<Scalars['Boolean']>;
   price: Scalars['Float'];
+  priceAfterDiscount: Scalars['Float'];
   product: Product;
+  salesPercent?: Maybe<Scalars['Float']>;
   status: Scalars['Float'];
   type: Scalars['String'];
 };
@@ -507,6 +495,7 @@ export type Price = {
 export type PriceInput = {
   isGift?: InputMaybe<Scalars['Boolean']>;
   price: Scalars['Float'];
+  salesPercent?: InputMaybe<Scalars['Float']>;
   status: Scalars['Float'];
   type: Scalars['String'];
 };
@@ -527,6 +516,7 @@ export type Product = {
   class: ProductClass;
   commentCount: Scalars['Float'];
   comments?: Maybe<Array<UserComment>>;
+  country: Country;
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
   id: Scalars['Float'];
@@ -535,10 +525,13 @@ export type Product = {
   kind: ProductKind;
   maxPrice: Scalars['Float'];
   minPrice: Scalars['Float'];
+  otherInfo: Array<Scalars['String']>;
+  priceAfterDiscount: Scalars['Float'];
   priceToDisplay: Scalars['Float'];
   prices: Array<Price>;
   productName: Scalars['String'];
   sales?: Maybe<Scalars['Float']>;
+  salesPercent?: Maybe<Scalars['Float']>;
   thumbnail: Scalars['String'];
 };
 
@@ -555,10 +548,10 @@ export type ProductClass = {
 export type ProductInput = {
   brandId: Scalars['Float'];
   classId: Scalars['Float'];
+  countryName: Scalars['String'];
   description: Scalars['String'];
   imgDescription: Array<Scalars['String']>;
   kindId: Scalars['Float'];
-  priceToDisplay: Scalars['Float'];
   prices: Array<PriceInput>;
   productName: Scalars['String'];
   sales?: InputMaybe<Scalars['Float']>;
@@ -567,7 +560,7 @@ export type ProductInput = {
 
 export type ProductKind = {
   __typename?: 'ProductKind';
-  brands?: Maybe<Array<Brand>>;
+  countries?: Maybe<Array<Country>>;
   createdAt: Scalars['DateTime'];
   id: Scalars['Float'];
   name: Scalars['String'];
@@ -599,12 +592,12 @@ export type Query = {
   adminGetBills: BillResponse;
   adminGetCommentsNoFeedback: CommentResponse;
   adminGetKindBrandClass: KindBrandClassResponse;
+  adminGetProductClasses: ProductKindResponse;
   adminGetProductKinds: ProductKindResponse;
   adminGetTakeMoneyFields: TakeMoneyFieldResponse;
   checkIntroduceCode: UserResponse;
   dashboard: DashboardResponse;
   getBrandWithProducts: PaginationBrandWithProductsResponse;
-  getBrands: BrandResponse;
   getCartProduct: CartProductResponse;
   getComments: PaginationCommentsResponse;
   getEvent: MyEventResponse;
@@ -616,7 +609,6 @@ export type Query = {
   getPaginationUsersToday: PaginationUsersResponse;
   getProduct: ProductResponse;
   getProductPaidAmount: Scalars['Float'];
-  getProducts: PaginationProductsResponse;
   getProductsByKind: PaginationProductsResponse;
   getProductsBySearchInput: ProductResponse;
   getProductsForIndex: ProductKindResponse;
@@ -639,11 +631,6 @@ export type QueryCheckIntroduceCodeArgs = {
 
 export type QueryGetBrandWithProductsArgs = {
   paginationOptions: PaginationOptionsInput;
-};
-
-
-export type QueryGetBrandsArgs = {
-  kindId: Scalars['Float'];
 };
 
 
@@ -688,12 +675,8 @@ export type QueryGetProductArgs = {
 };
 
 
-export type QueryGetProductsArgs = {
-  paginationOptions: PaginationOptionsInput;
-};
-
-
 export type QueryGetProductsByKindArgs = {
+  countryName: Scalars['String'];
   paginationOptions: PaginationOptionsInput;
 };
 
@@ -704,7 +687,7 @@ export type QueryGetProductsBySearchInputArgs = {
 
 
 export type QueryGetProductsForIndexArgs = {
-  take: Scalars['Float'];
+  countryName: Scalars['String'];
 };
 
 
@@ -727,9 +710,9 @@ export type TakeMoneyField = {
   cancelReason?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   id: Scalars['Float'];
-  isSuccess?: Maybe<Scalars['Boolean']>;
   isSuccessImage?: Maybe<Scalars['String']>;
   money: Scalars['Float'];
+  status?: Maybe<Scalars['String']>;
   user: User;
 };
 
@@ -762,7 +745,7 @@ export type User = {
   introduceCode: Scalars['Float'];
   isHidden?: Maybe<Scalars['Boolean']>;
   moneyBonuses?: Maybe<Array<MoneyBonus>>;
-  moneyCount: Scalars['Float'];
+  moneyDepot?: Maybe<Scalars['Float']>;
   packedCount: Scalars['Float'];
   paidAmount?: Maybe<Scalars['Float']>;
   takeMoneyField?: Maybe<Array<TakeMoneyField>>;
@@ -809,7 +792,6 @@ export type WebDataResponse = IResponse & {
   brands?: Maybe<Array<Brand>>;
   code: Scalars['Float'];
   isHidden?: Maybe<Scalars['Boolean']>;
-  kinds?: Maybe<Array<ProductKind>>;
   message?: Maybe<Scalars['String']>;
   products?: Maybe<Array<BillProduct>>;
   success: Scalars['Boolean'];
@@ -831,6 +813,13 @@ export type AdminCreateBrandMutationVariables = Exact<{
 
 
 export type AdminCreateBrandMutation = { __typename?: 'Mutation', adminCreateBrand: { __typename?: 'BrandResponse', code: number, success: boolean, message?: string | null } };
+
+export type AdminCreateCountryMutationVariables = Exact<{
+  countryName: Scalars['String'];
+}>;
+
+
+export type AdminCreateCountryMutation = { __typename?: 'Mutation', adminCreateCountry: { __typename?: 'SimpleResponse', code: number, success: boolean, message?: string | null } };
 
 export type AdminCreateEventMutationVariables = Exact<{
   input: MyEventInput;
@@ -912,6 +901,7 @@ export type AdminTakeMoneyFieldCancelMutation = { __typename?: 'Mutation', admin
 
 export type AdminTakeMoneyFieldCompletedMutationVariables = Exact<{
   fieldId: Scalars['Float'];
+  imageSuccess: Scalars['String'];
 }>;
 
 
@@ -982,12 +972,12 @@ export type UserCancelTakeMoneyFieldMutation = { __typename?: 'Mutation', userCa
 export type AdminGetKindBrandClassQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AdminGetKindBrandClassQuery = { __typename?: 'Query', adminGetKindBrandClass: { __typename?: 'KindBrandClassResponse', code: number, success: boolean, message?: string | null, kinds?: Array<{ __typename?: 'ProductKind', id: number, name: string }> | null, classes?: Array<{ __typename?: 'ProductClass', id: number, name: string, kind: { __typename?: 'ProductKind', id: number } }> | null, brands?: Array<{ __typename?: 'Brand', id: number, brandName: string, kind: { __typename?: 'ProductKind', id: number } }> | null } };
+export type AdminGetKindBrandClassQuery = { __typename?: 'Query', adminGetKindBrandClass: { __typename?: 'KindBrandClassResponse', code: number, success: boolean, message?: string | null, kinds?: Array<{ __typename?: 'ProductKind', id: number, name: string }> | null, classes?: Array<{ __typename?: 'ProductClass', id: number, name: string, kind: { __typename?: 'ProductKind', id: number } }> | null, brands?: Array<{ __typename?: 'Brand', id: number, brandName: string }> | null } };
 
 export type GetUserMoneyHistoryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserMoneyHistoryQuery = { __typename?: 'Query', getUserMoneyHistory: { __typename?: 'UserMoneyHistoryResponse', code: number, success: boolean, message?: string | null, moneyBonuses?: Array<{ __typename?: 'MoneyBonus', moneyNumber: number, description: string, type: string, createdAt: any }> | null, takeMoneyFields?: Array<{ __typename?: 'TakeMoneyField', id: number, accoutName: string, accountNumber: string, accountBankName: string, cancelReason?: string | null, money: number, isSuccess?: boolean | null, createdAt: any }> | null } };
+export type GetUserMoneyHistoryQuery = { __typename?: 'Query', getUserMoneyHistory: { __typename?: 'UserMoneyHistoryResponse', code: number, success: boolean, message?: string | null, moneyBonuses?: Array<{ __typename?: 'MoneyBonus', moneyNumber: number, description: string, createdAt: any }> | null, takeMoneyFields?: Array<{ __typename?: 'TakeMoneyField', id: number, accoutName: string, accountNumber: string, accountBankName: string, cancelReason?: string | null, isSuccessImage?: string | null, money: number, status?: string | null, createdAt: any }> | null } };
 
 export type AdminDashboardQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1006,15 +996,20 @@ export type AdminGetCommentsNoFeedbackQueryVariables = Exact<{ [key: string]: ne
 
 export type AdminGetCommentsNoFeedbackQuery = { __typename?: 'Query', adminGetCommentsNoFeedback: { __typename?: 'CommentResponse', code: number, success: boolean, message?: string | null, comments?: Array<{ __typename?: 'UserComment', id: number, content: string, user: { __typename?: 'User', userAvatar: string, userName: string }, product: { __typename?: 'Product', productName: string, priceToDisplay: number } }> | null } };
 
+export type AdminGetProductClassesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AdminGetProductClassesQuery = { __typename?: 'Query', adminGetProductClasses: { __typename?: 'ProductKindResponse', code: number, success: boolean, message?: string | null, classes?: Array<{ __typename?: 'ProductClass', id: number, name: string }> | null } };
+
 export type AdminGetProductKindsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AdminGetProductKindsQuery = { __typename?: 'Query', adminGetProductKinds: { __typename?: 'ProductKindResponse', code: number, success: boolean, message?: string | null, kinds?: Array<{ __typename?: 'ProductKind', id: number, name: string }> | null, classes?: Array<{ __typename?: 'ProductClass', id: number, name: string }> | null } };
+export type AdminGetProductKindsQuery = { __typename?: 'Query', adminGetProductKinds: { __typename?: 'ProductKindResponse', code: number, success: boolean, message?: string | null, kinds?: Array<{ __typename?: 'ProductKind', id: number, name: string }> | null } };
 
 export type AdminGetTakeMoneyFieldsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AdminGetTakeMoneyFieldsQuery = { __typename?: 'Query', adminGetTakeMoneyFields: { __typename?: 'TakeMoneyFieldResponse', code: number, success: boolean, message?: string | null, fields?: Array<{ __typename?: 'TakeMoneyField', id: number, accoutName: string, accountNumber: string, accountBankName: string, money: number, user: { __typename?: 'User', moneyCount: number, id: number } }> | null } };
+export type AdminGetTakeMoneyFieldsQuery = { __typename?: 'Query', adminGetTakeMoneyFields: { __typename?: 'TakeMoneyFieldResponse', code: number, success: boolean, message?: string | null, fields?: Array<{ __typename?: 'TakeMoneyField', id: number, accoutName: string, accountNumber: string, accountBankName: string, status?: string | null, money: number, user: { __typename?: 'User', moneyDepot?: number | null, id: number } }> | null } };
 
 export type CheckIntroduceCodeQueryVariables = Exact<{
   introduceCode: Scalars['Float'];
@@ -1029,14 +1024,7 @@ export type GetBrandWithProductsQueryVariables = Exact<{
 }>;
 
 
-export type GetBrandWithProductsQuery = { __typename?: 'Query', getBrandWithProducts: { __typename?: 'PaginationBrandWithProductsResponse', code: number, success: boolean, message?: string | null, pageSize?: number | null, totalCount?: number | null, brandWithProducts?: { __typename?: 'Brand', id: number, brandName: string, thumbnail: string, description: string, kind: { __typename?: 'ProductKind', id: number, name: string }, productClasses: Array<{ __typename?: 'ProductClass', id: number, name: string }>, products?: Array<{ __typename?: 'Product', id: number, productName: string, priceToDisplay: number, commentCount: number, averageRating: number, sales?: number | null, thumbnail: string, class: { __typename?: 'ProductClass', name: string } }> | null } | null } };
-
-export type GetBrandsQueryVariables = Exact<{
-  kindId: Scalars['Float'];
-}>;
-
-
-export type GetBrandsQuery = { __typename?: 'Query', getBrands: { __typename?: 'BrandResponse', code: number, success: boolean, message?: string | null, brands?: Array<{ __typename?: 'Brand', id: number, brandName: string, thumbnail: string }> | null } };
+export type GetBrandWithProductsQuery = { __typename?: 'Query', getBrandWithProducts: { __typename?: 'PaginationBrandWithProductsResponse', code: number, success: boolean, message?: string | null, pageSize?: number | null, totalCount?: number | null, brandWithProducts?: { __typename?: 'Brand', id: number, brandName: string, thumbnail: string, description?: string | null, productClasses: Array<{ __typename?: 'ProductClass', id: number, name: string }>, products?: Array<{ __typename?: 'Product', id: number, productName: string, salesPercent?: number | null, minPrice: number, maxPrice: number, commentCount: number, averageRating: number, sales?: number | null, thumbnail: string, class: { __typename?: 'ProductClass', name: string } }> | null } | null } };
 
 export type GetCartProductQueryVariables = Exact<{
   localBillProducts: Array<BillProductInput> | BillProductInput;
@@ -1096,33 +1084,27 @@ export type GetProductQueryVariables = Exact<{
 }>;
 
 
-export type GetProductQuery = { __typename?: 'Query', getProduct: { __typename?: 'ProductResponse', code: number, message?: string | null, success: boolean, product?: { __typename?: 'Product', id: number, thumbnail: string, productName: string, imgDescription: Array<string>, imageList: Array<string>, description: string, priceToDisplay: number, kind: { __typename?: 'ProductKind', id: number, name: string }, prices: Array<{ __typename?: 'Price', id: number, type: string, price: number, status: number }>, brand: { __typename?: 'Brand', id: number, brandName: string }, comments?: Array<{ __typename?: 'UserComment', content: string, rating: number, imagesComment?: Array<string> | null, createdAt: any, user: { __typename?: 'User', userName: string, userAvatar: string }, feedbacks?: Array<{ __typename?: 'Feedback', content: string, createdAt: any, admin: { __typename?: 'Admin', adminName: string, avatar: string } }> | null }> | null } | null } };
+export type GetProductQuery = { __typename?: 'Query', getProduct: { __typename?: 'ProductResponse', code: number, message?: string | null, success: boolean, product?: { __typename?: 'Product', id: number, thumbnail: string, productName: string, imgDescription: Array<string>, imageList: Array<string>, description: string, priceToDisplay: number, otherInfo: Array<string>, kind: { __typename?: 'ProductKind', id: number, name: string }, country: { __typename?: 'Country', countryName: string }, prices: Array<{ __typename?: 'Price', id: number, type: string, price: number, salesPercent?: number | null, priceAfterDiscount: number, status: number }>, brand: { __typename?: 'Brand', id: number, brandName: string }, comments?: Array<{ __typename?: 'UserComment', content: string, rating: number, imagesComment?: Array<string> | null, createdAt: any, user: { __typename?: 'User', userName: string, userAvatar: string }, feedbacks?: Array<{ __typename?: 'Feedback', content: string, createdAt: any, admin: { __typename?: 'Admin', adminName: string, avatar: string } }> | null }> | null } | null } };
 
 export type GetProductsForIndexQueryVariables = Exact<{
-  take: Scalars['Float'];
+  countryName: Scalars['String'];
 }>;
 
 
-export type GetProductsForIndexQuery = { __typename?: 'Query', getProductsForIndex: { __typename?: 'ProductKindResponse', code: number, success: boolean, message?: string | null, kinds?: Array<{ __typename?: 'ProductKind', id: number, name: string, products?: Array<{ __typename?: 'Product', id: number, productName: string, averageRating: number, sales?: number | null, thumbnail: string, priceToDisplay: number, commentCount: number, class: { __typename?: 'ProductClass', name: string } }> | null }> | null } };
+export type GetProductsForIndexQuery = { __typename?: 'Query', getProductsForIndex: { __typename?: 'ProductKindResponse', code: number, success: boolean, message?: string | null, kinds?: Array<{ __typename?: 'ProductKind', id: number, name: string, countries?: Array<{ __typename?: 'Country', countryName: string }> | null, products?: Array<{ __typename?: 'Product', id: number, productName: string, averageRating: number, sales?: number | null, thumbnail: string, maxPrice: number, minPrice: number, salesPercent?: number | null, priceAfterDiscount: number, commentCount: number, class: { __typename?: 'ProductClass', name: string } }> | null }> | null } };
 
 export type GetProductPaidAmountQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetProductPaidAmountQuery = { __typename?: 'Query', getProductPaidAmount: number };
 
-export type GetProductsQueryVariables = Exact<{
-  paginationOptions: PaginationOptionsInput;
-}>;
-
-
-export type GetProductsQuery = { __typename?: 'Query', getProducts: { __typename?: 'PaginationProductsResponse', code: number, success: boolean, message?: string | null, totalCount?: number | null, pageSize?: number | null, products?: Array<{ __typename?: 'Product', id: number, productName: string, averageRating: number, sales?: number | null, thumbnail: string, priceToDisplay: number, imgDescription: Array<string>, commentCount: number, prices: Array<{ __typename?: 'Price', id: number, type: string, price: number, status: number }> }> | null } };
-
 export type GetProductsByKindQueryVariables = Exact<{
   paginationOptions: PaginationOptionsInput;
+  countryName: Scalars['String'];
 }>;
 
 
-export type GetProductsByKindQuery = { __typename?: 'Query', getProductsByKind: { __typename?: 'PaginationProductsResponse', code: number, success: boolean, message?: string | null, pageSize?: number | null, totalCount?: number | null, kindId?: number | null, kindName?: string | null, productClasses?: Array<{ __typename?: 'ProductClass', id: number, name: string }> | null, products?: Array<{ __typename?: 'Product', id: number, productName: string, priceToDisplay: number, commentCount: number, averageRating: number, sales?: number | null, thumbnail: string, prices: Array<{ __typename?: 'Price', id: number, type: string, price: number, status: number }>, class: { __typename?: 'ProductClass', name: string } }> | null } };
+export type GetProductsByKindQuery = { __typename?: 'Query', getProductsByKind: { __typename?: 'PaginationProductsResponse', code: number, success: boolean, message?: string | null, pageSize?: number | null, totalCount?: number | null, kindId?: number | null, kindName?: string | null, productClasses?: Array<{ __typename?: 'ProductClass', id: number, name: string }> | null, products?: Array<{ __typename?: 'Product', id: number, productName: string, priceToDisplay: number, commentCount: number, averageRating: number, minPrice: number, maxPrice: number, salesPercent?: number | null, sales?: number | null, thumbnail: string, prices: Array<{ __typename?: 'Price', id: number, type: string, price: number, status: number }>, class: { __typename?: 'ProductClass', name: string } }> | null } };
 
 export type GetProductsBySearchInputQueryVariables = Exact<{
   value: Scalars['String'];
@@ -1134,14 +1116,14 @@ export type GetProductsBySearchInputQuery = { __typename?: 'Query', getProductsB
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'UserResponse', code: number, success: boolean, message?: string | null, user?: { __typename?: 'User', userName: string, userAvatar: string, confirmWaitingCount: number, packedCount: number, moneyCount: number, deliveringCount: number, introduceCode: number, bills?: Array<{ __typename?: 'Bill', id: number, billStatus?: string | null, createdAt: string, paymentType: string, paymentDown?: number | null, totalPrice: number, commentPrice: number, introducePrice: number, isCommented?: boolean | null, billProducts: Array<{ __typename?: 'BillProduct', productThumbnail: string, productName: string, productAmount: number, productType: string, productPrice: number }>, customer: { __typename?: 'Customer', customerName: string, customerPhone: string, address: string, city: string, province: string } }> | null } | null } };
+export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'UserResponse', code: number, success: boolean, message?: string | null, user?: { __typename?: 'User', userName: string, userAvatar: string, confirmWaitingCount: number, packedCount: number, moneyDepot?: number | null, deliveringCount: number, introduceCode: number, bills?: Array<{ __typename?: 'Bill', id: number, billStatus?: string | null, createdAt: string, paymentType: string, paymentDown?: number | null, totalPrice: number, commentPrice: number, introducePrice: number, isCommented?: boolean | null, billProducts: Array<{ __typename?: 'BillProduct', productThumbnail: string, productName: string, productAmount: number, productType: string, productPrice: number }>, customer: { __typename?: 'Customer', customerName: string, customerPhone: string, address: string, city: string, province: string } }> | null } | null } };
 
 export type GetWebDataQueryVariables = Exact<{
   localBillProducts: Array<BillProductInput> | BillProductInput;
 }>;
 
 
-export type GetWebDataQuery = { __typename?: 'Query', getWebData: { __typename?: 'WebDataResponse', code: number, success: boolean, message?: string | null, token?: string | null, avatar?: string | null, type?: string | null, isHidden?: boolean | null, products?: Array<{ __typename?: 'BillProduct', productName: string, productType: string, productPrice: number, productAmount: number, productThumbnail: string, priceIdForLocal?: number | null }> | null, kinds?: Array<{ __typename?: 'ProductKind', id: number, name: string }> | null, brands?: Array<{ __typename?: 'Brand', id: number, brandName: string }> | null } };
+export type GetWebDataQuery = { __typename?: 'Query', getWebData: { __typename?: 'WebDataResponse', code: number, success: boolean, message?: string | null, token?: string | null, avatar?: string | null, type?: string | null, isHidden?: boolean | null, products?: Array<{ __typename?: 'BillProduct', productName: string, productType: string, productPrice: number, productAmount: number, productThumbnail: string, priceIdForLocal?: number | null, countryNameForDeliveryPrice?: string | null }> | null, brands?: Array<{ __typename?: 'Brand', id: number, brandName: string }> | null } };
 
 
 export const AdminAddClassToBrandDocument = gql`
@@ -1215,6 +1197,41 @@ export function useAdminCreateBrandMutation(baseOptions?: Apollo.MutationHookOpt
 export type AdminCreateBrandMutationHookResult = ReturnType<typeof useAdminCreateBrandMutation>;
 export type AdminCreateBrandMutationResult = Apollo.MutationResult<AdminCreateBrandMutation>;
 export type AdminCreateBrandMutationOptions = Apollo.BaseMutationOptions<AdminCreateBrandMutation, AdminCreateBrandMutationVariables>;
+export const AdminCreateCountryDocument = gql`
+    mutation AdminCreateCountry($countryName: String!) {
+  adminCreateCountry(countryName: $countryName) {
+    code
+    success
+    message
+  }
+}
+    `;
+export type AdminCreateCountryMutationFn = Apollo.MutationFunction<AdminCreateCountryMutation, AdminCreateCountryMutationVariables>;
+
+/**
+ * __useAdminCreateCountryMutation__
+ *
+ * To run a mutation, you first call `useAdminCreateCountryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminCreateCountryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminCreateCountryMutation, { data, loading, error }] = useAdminCreateCountryMutation({
+ *   variables: {
+ *      countryName: // value for 'countryName'
+ *   },
+ * });
+ */
+export function useAdminCreateCountryMutation(baseOptions?: Apollo.MutationHookOptions<AdminCreateCountryMutation, AdminCreateCountryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AdminCreateCountryMutation, AdminCreateCountryMutationVariables>(AdminCreateCountryDocument, options);
+      }
+export type AdminCreateCountryMutationHookResult = ReturnType<typeof useAdminCreateCountryMutation>;
+export type AdminCreateCountryMutationResult = Apollo.MutationResult<AdminCreateCountryMutation>;
+export type AdminCreateCountryMutationOptions = Apollo.BaseMutationOptions<AdminCreateCountryMutation, AdminCreateCountryMutationVariables>;
 export const AdminCreateEventDocument = gql`
     mutation AdminCreateEvent($input: MyEventInput!) {
   adminCreateEvent(input: $input) {
@@ -1590,8 +1607,8 @@ export type AdminTakeMoneyFieldCancelMutationHookResult = ReturnType<typeof useA
 export type AdminTakeMoneyFieldCancelMutationResult = Apollo.MutationResult<AdminTakeMoneyFieldCancelMutation>;
 export type AdminTakeMoneyFieldCancelMutationOptions = Apollo.BaseMutationOptions<AdminTakeMoneyFieldCancelMutation, AdminTakeMoneyFieldCancelMutationVariables>;
 export const AdminTakeMoneyFieldCompletedDocument = gql`
-    mutation AdminTakeMoneyFieldCompleted($fieldId: Float!) {
-  adminTakeMoneyFieldCompleted(fieldId: $fieldId) {
+    mutation AdminTakeMoneyFieldCompleted($fieldId: Float!, $imageSuccess: String!) {
+  adminTakeMoneyFieldCompleted(fieldId: $fieldId, imageSuccess: $imageSuccess) {
     code
     success
     message
@@ -1614,6 +1631,7 @@ export type AdminTakeMoneyFieldCompletedMutationFn = Apollo.MutationFunction<Adm
  * const [adminTakeMoneyFieldCompletedMutation, { data, loading, error }] = useAdminTakeMoneyFieldCompletedMutation({
  *   variables: {
  *      fieldId: // value for 'fieldId'
+ *      imageSuccess: // value for 'imageSuccess'
  *   },
  * });
  */
@@ -1965,9 +1983,6 @@ export const AdminGetKindBrandClassDocument = gql`
     brands {
       id
       brandName
-      kind {
-        id
-      }
     }
   }
 }
@@ -2008,7 +2023,6 @@ export const GetUserMoneyHistoryDocument = gql`
     moneyBonuses {
       moneyNumber
       description
-      type
       createdAt
     }
     takeMoneyFields {
@@ -2017,8 +2031,9 @@ export const GetUserMoneyHistoryDocument = gql`
       accountNumber
       accountBankName
       cancelReason
+      isSuccessImage
       money
-      isSuccess
+      status
       createdAt
     }
   }
@@ -2202,6 +2217,46 @@ export function useAdminGetCommentsNoFeedbackLazyQuery(baseOptions?: Apollo.Lazy
 export type AdminGetCommentsNoFeedbackQueryHookResult = ReturnType<typeof useAdminGetCommentsNoFeedbackQuery>;
 export type AdminGetCommentsNoFeedbackLazyQueryHookResult = ReturnType<typeof useAdminGetCommentsNoFeedbackLazyQuery>;
 export type AdminGetCommentsNoFeedbackQueryResult = Apollo.QueryResult<AdminGetCommentsNoFeedbackQuery, AdminGetCommentsNoFeedbackQueryVariables>;
+export const AdminGetProductClassesDocument = gql`
+    query AdminGetProductClasses {
+  adminGetProductClasses {
+    code
+    success
+    message
+    classes {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useAdminGetProductClassesQuery__
+ *
+ * To run a query within a React component, call `useAdminGetProductClassesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminGetProductClassesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdminGetProductClassesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAdminGetProductClassesQuery(baseOptions?: Apollo.QueryHookOptions<AdminGetProductClassesQuery, AdminGetProductClassesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AdminGetProductClassesQuery, AdminGetProductClassesQueryVariables>(AdminGetProductClassesDocument, options);
+      }
+export function useAdminGetProductClassesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AdminGetProductClassesQuery, AdminGetProductClassesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AdminGetProductClassesQuery, AdminGetProductClassesQueryVariables>(AdminGetProductClassesDocument, options);
+        }
+export type AdminGetProductClassesQueryHookResult = ReturnType<typeof useAdminGetProductClassesQuery>;
+export type AdminGetProductClassesLazyQueryHookResult = ReturnType<typeof useAdminGetProductClassesLazyQuery>;
+export type AdminGetProductClassesQueryResult = Apollo.QueryResult<AdminGetProductClassesQuery, AdminGetProductClassesQueryVariables>;
 export const AdminGetProductKindsDocument = gql`
     query AdminGetProductKinds {
   adminGetProductKinds {
@@ -2209,10 +2264,6 @@ export const AdminGetProductKindsDocument = gql`
     success
     message
     kinds {
-      id
-      name
-    }
-    classes {
       id
       name
     }
@@ -2257,9 +2308,10 @@ export const AdminGetTakeMoneyFieldsDocument = gql`
       accoutName
       accountNumber
       accountBankName
+      status
       money
       user {
-        moneyCount
+        moneyDepot
         id
       }
     }
@@ -2345,10 +2397,6 @@ export const GetBrandWithProductsDocument = gql`
       brandName
       thumbnail
       description
-      kind {
-        id
-        name
-      }
       productClasses {
         id
         name
@@ -2356,7 +2404,9 @@ export const GetBrandWithProductsDocument = gql`
       products {
         id
         productName
-        priceToDisplay
+        salesPercent
+        minPrice
+        maxPrice
         commentCount
         averageRating
         sales
@@ -2397,48 +2447,6 @@ export function useGetBrandWithProductsLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type GetBrandWithProductsQueryHookResult = ReturnType<typeof useGetBrandWithProductsQuery>;
 export type GetBrandWithProductsLazyQueryHookResult = ReturnType<typeof useGetBrandWithProductsLazyQuery>;
 export type GetBrandWithProductsQueryResult = Apollo.QueryResult<GetBrandWithProductsQuery, GetBrandWithProductsQueryVariables>;
-export const GetBrandsDocument = gql`
-    query GetBrands($kindId: Float!) {
-  getBrands(kindId: $kindId) {
-    code
-    success
-    message
-    brands {
-      id
-      brandName
-      thumbnail
-    }
-  }
-}
-    `;
-
-/**
- * __useGetBrandsQuery__
- *
- * To run a query within a React component, call `useGetBrandsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetBrandsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetBrandsQuery({
- *   variables: {
- *      kindId: // value for 'kindId'
- *   },
- * });
- */
-export function useGetBrandsQuery(baseOptions: Apollo.QueryHookOptions<GetBrandsQuery, GetBrandsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetBrandsQuery, GetBrandsQueryVariables>(GetBrandsDocument, options);
-      }
-export function useGetBrandsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBrandsQuery, GetBrandsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetBrandsQuery, GetBrandsQueryVariables>(GetBrandsDocument, options);
-        }
-export type GetBrandsQueryHookResult = ReturnType<typeof useGetBrandsQuery>;
-export type GetBrandsLazyQueryHookResult = ReturnType<typeof useGetBrandsLazyQuery>;
-export type GetBrandsQueryResult = Apollo.QueryResult<GetBrandsQuery, GetBrandsQueryVariables>;
 export const GetCartProductDocument = gql`
     query GetCartProduct($localBillProducts: [BillProductInput!]!) {
   getCartProduct(localBillProducts: $localBillProducts) {
@@ -2828,14 +2836,20 @@ export const GetProductDocument = gql`
       imageList
       description
       priceToDisplay
+      otherInfo
       kind {
         id
         name
+      }
+      country {
+        countryName
       }
       prices {
         id
         type
         price
+        salesPercent
+        priceAfterDiscount
         status
       }
       brand {
@@ -2893,21 +2907,27 @@ export type GetProductQueryHookResult = ReturnType<typeof useGetProductQuery>;
 export type GetProductLazyQueryHookResult = ReturnType<typeof useGetProductLazyQuery>;
 export type GetProductQueryResult = Apollo.QueryResult<GetProductQuery, GetProductQueryVariables>;
 export const GetProductsForIndexDocument = gql`
-    query GetProductsForIndex($take: Float!) {
-  getProductsForIndex(take: $take) {
+    query GetProductsForIndex($countryName: String!) {
+  getProductsForIndex(countryName: $countryName) {
     code
     success
     message
     kinds {
       id
       name
+      countries {
+        countryName
+      }
       products {
         id
         productName
         averageRating
         sales
         thumbnail
-        priceToDisplay
+        maxPrice
+        minPrice
+        salesPercent
+        priceAfterDiscount
         commentCount
         class {
           name
@@ -2930,7 +2950,7 @@ export const GetProductsForIndexDocument = gql`
  * @example
  * const { data, loading, error } = useGetProductsForIndexQuery({
  *   variables: {
- *      take: // value for 'take'
+ *      countryName: // value for 'countryName'
  *   },
  * });
  */
@@ -2977,64 +2997,12 @@ export function useGetProductPaidAmountLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type GetProductPaidAmountQueryHookResult = ReturnType<typeof useGetProductPaidAmountQuery>;
 export type GetProductPaidAmountLazyQueryHookResult = ReturnType<typeof useGetProductPaidAmountLazyQuery>;
 export type GetProductPaidAmountQueryResult = Apollo.QueryResult<GetProductPaidAmountQuery, GetProductPaidAmountQueryVariables>;
-export const GetProductsDocument = gql`
-    query GetProducts($paginationOptions: PaginationOptionsInput!) {
-  getProducts(paginationOptions: $paginationOptions) {
-    code
-    success
-    message
-    totalCount
-    pageSize
-    products {
-      id
-      productName
-      averageRating
-      sales
-      thumbnail
-      priceToDisplay
-      imgDescription
-      commentCount
-      prices {
-        id
-        type
-        price
-        status
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetProductsQuery__
- *
- * To run a query within a React component, call `useGetProductsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProductsQuery({
- *   variables: {
- *      paginationOptions: // value for 'paginationOptions'
- *   },
- * });
- */
-export function useGetProductsQuery(baseOptions: Apollo.QueryHookOptions<GetProductsQuery, GetProductsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProductsQuery, GetProductsQueryVariables>(GetProductsDocument, options);
-      }
-export function useGetProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductsQuery, GetProductsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProductsQuery, GetProductsQueryVariables>(GetProductsDocument, options);
-        }
-export type GetProductsQueryHookResult = ReturnType<typeof useGetProductsQuery>;
-export type GetProductsLazyQueryHookResult = ReturnType<typeof useGetProductsLazyQuery>;
-export type GetProductsQueryResult = Apollo.QueryResult<GetProductsQuery, GetProductsQueryVariables>;
 export const GetProductsByKindDocument = gql`
-    query GetProductsByKind($paginationOptions: PaginationOptionsInput!) {
-  getProductsByKind(paginationOptions: $paginationOptions) {
+    query GetProductsByKind($paginationOptions: PaginationOptionsInput!, $countryName: String!) {
+  getProductsByKind(
+    paginationOptions: $paginationOptions
+    countryName: $countryName
+  ) {
     code
     success
     message
@@ -3052,6 +3020,9 @@ export const GetProductsByKindDocument = gql`
       priceToDisplay
       commentCount
       averageRating
+      minPrice
+      maxPrice
+      salesPercent
       sales
       thumbnail
       prices {
@@ -3081,6 +3052,7 @@ export const GetProductsByKindDocument = gql`
  * const { data, loading, error } = useGetProductsByKindQuery({
  *   variables: {
  *      paginationOptions: // value for 'paginationOptions'
+ *      countryName: // value for 'countryName'
  *   },
  * });
  */
@@ -3150,7 +3122,7 @@ export const GetUserDocument = gql`
       userAvatar
       confirmWaitingCount
       packedCount
-      moneyCount
+      moneyDepot
       deliveringCount
       introduceCode
       bills {
@@ -3226,10 +3198,7 @@ export const GetWebDataDocument = gql`
       productAmount
       productThumbnail
       priceIdForLocal
-    }
-    kinds {
-      id
-      name
+      countryNameForDeliveryPrice
     }
     brands {
       id

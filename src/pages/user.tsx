@@ -1,5 +1,5 @@
 import { ChevronRightIcon, EditIcon, ViewIcon } from "@chakra-ui/icons";
-import { Badge, Button, Select, useToast } from "@chakra-ui/react";
+import { Button, Select, useToast } from "@chakra-ui/react";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
@@ -9,31 +9,22 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "../assets/css/pages/user.module.css";
 import BillCancelReason from "../components/BillCancelReason";
 import BillDetail from "../components/BillDetail";
+import MyBadge from "../components/MyBadge";
 import MySpinner from "../components/MySpinner";
 import Navbar from "../components/Navbar";
 import TakeMoney, { TakeMoneyProps } from "../components/TakeMoney";
-import {
-  Bill,
-  useGetUserLazyQuery,
-
-  UserResponse
-} from "../generated/graphql";
+import { Bill, useGetUserLazyQuery, UserResponse } from "../generated/graphql";
 import { authSelector } from "../store/reducers/authSlice";
 import { setWriteCommentProps } from "../store/reducers/localSlice";
 import { MoneyConverter } from "../utils/other/ConvertToMoney";
 import { BillStatusType } from "../utils/type/BillStatusType";
 import {
   ProductInCommentProps,
-  WriteCommentProps
+  WriteCommentProps,
 } from "../utils/type/redux/reduxType";
-
-
-
 
 const User = () => {
   const [getUserQuery] = useGetUserLazyQuery();
-
- 
 
   const { isAuthenticated, isLoading, type } = useSelector(authSelector);
   const [loadingLocal, setLoadingLocal] = useState(false);
@@ -89,7 +80,7 @@ const User = () => {
       const infoTemp: TakeMoneyProps = {
         imgSrc: user.user!.userAvatar,
         userName: user.user?.userName!,
-        money: user.user?.moneyCount!,
+        money: user.user?.moneyDepot!,
       };
       setInfo(infoTemp);
 
@@ -132,9 +123,10 @@ const User = () => {
   };
 
   const logout = async () => {
-    if(typeof window!=="undefined"){
-      localStorage.removeItem("SESSION_TOKEN")
-      router.reload()
+    if (typeof window !== "undefined") {
+      localStorage.clear()
+      router.push("/")
+      router.reload();
     }
   };
 
@@ -159,37 +151,46 @@ const User = () => {
                     </h3>
                   </div>
 
-
                   <div className={styles.accountContainer}>
-                    <h3 className={styles.title}>*Mã GIỚI THIỆU<span className={styles.toEvent} onClick={() => router.push("/events")}>(Xem Chi tiết)</span></h3>
+                    <h3 className={styles.title}>
+                      *Mã GIỚI THIỆU
+                      <span
+                        className={styles.toEvent}
+                        onClick={() => router.push("/events")}
+                      >
+                        (Xem Chi tiết)
+                      </span>
+                    </h3>
                     <div className={styles.moneyInfo}>
                       <h4>{user?.user?.introduceCode}</h4>
-                      <FontAwesomeIcon icon={faCopy}className={styles.coppyIcon} onClick={() =>{
-                      
-                          if(user && user.user?.introduceCode){
-                            navigator.clipboard.writeText(user.user.introduceCode.toString())
+                      <FontAwesomeIcon
+                        icon={faCopy}
+                        className={styles.coppyIcon}
+                        onClick={() => {
+                          if (user && user.user?.introduceCode) {
+                            navigator.clipboard.writeText(
+                              user.user.introduceCode.toString()
+                            );
                             toast({
-                              title:"Thông báo",
-                              description:"Coppy thành công!",
-                              status:"success",
-                              isClosable:true,
-                              duration:700,
-                              position:"top-right"
-                            })
+                              title: "Thông báo",
+                              description: "Coppy thành công!",
+                              status: "success",
+                              isClosable: true,
+                              duration: 700,
+                              position: "top-right",
+                            });
                           }
-                        
-                      }}/>
+                        }}
+                      />
                     </div>
                   </div>
                   <div className={styles.accountContainer}>
-                  <h3 className={styles.title}>*Tiền tích trữ</h3>
+                    <h3 className={styles.title}>*Tiền tích trữ</h3>
                     <div className={styles.moneyInfo}>
-                      
-                        
-                        <span className={styles.moneyNumber}>
-                          {MoneyConverter(user ? user!.user?.moneyCount! : 0)}
-                        </span>
-                      
+                      <span className={styles.moneyNumber}>
+                        {MoneyConverter(user?.user?.moneyDepot!)}
+                      </span>
+
                       {/* <Button
                       colorScheme="green"
                       className={clsx(styles.btnTakeMoney, "boxShadowNone")}
@@ -307,10 +308,14 @@ const User = () => {
                                   </div>
                                 </div>
                                 <div className={styles.writeCommentContainer}>
-                                  <div>
-                                    <Badge variant="solid" colorScheme="red">
-                                      {item.billStatus}
-                                    </Badge>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <MyBadge name={item.billStatus} />
+
                                     <ViewIcon
                                       color="gray.500"
                                       className={styles.viewIcon}
@@ -324,7 +329,10 @@ const User = () => {
                                     >
                                       Viết bình luận
                                     </EditIcon>
-                                    <h4>Viết bình luận để nhận {MoneyConverter(item.commentPrice)}</h4>
+                                    <h4>
+                                      Viết bình luận để nhận{" "}
+                                      {MoneyConverter(item.commentPrice)}
+                                    </h4>
                                   </div>
                                 </div>
                               </div>
@@ -380,10 +388,13 @@ const User = () => {
                                   </div>
                                 </div>
                                 <div className={styles.cancelControl}>
-                                  <div>
-                                    <Badge variant="solid" colorScheme="red">
-                                      {item.billStatus}
-                                    </Badge>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <MyBadge name={item.billStatus} />
                                     <ViewIcon
                                       color="gray.500"
                                       className={styles.viewIcon}
@@ -434,7 +445,7 @@ const User = () => {
                                           <h5>Ngày đặt : {item.createdAt}</h5>
                                           {item.paymentDown && (
                                             <h5 className={styles.paymentDown}>
-                                              Đã tranh toán trước :{" "}
+                                              Đã thanh toán trước :{" "}
                                               {MoneyConverter(item.paymentDown)}{" "}
                                             </h5>
                                           )}
@@ -444,10 +455,13 @@ const User = () => {
                                   </div>
                                 </div>
                                 <div className={styles.cancelControl}>
-                                  <div>
-                                    <Badge variant="solid" colorScheme="red">
-                                      {item.billStatus}
-                                    </Badge>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <MyBadge name={item.billStatus} />
                                     <ViewIcon
                                       color="gray.500"
                                       className={styles.viewIcon}

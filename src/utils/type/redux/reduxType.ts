@@ -12,6 +12,7 @@ export interface AuthProps {
 
 // Local
 export interface LocalProps {
+  
   countProps: number;
   writeCommentProps: WriteCommentProps | null;
   productInCommentProps: ProductInCommentProps | null;
@@ -19,7 +20,8 @@ export interface LocalProps {
   editProductPriceProps: EditProductPriceProps | null;
   kinds:ProductKindProps[],
   brands:ProductBrandProps[],
-  billProductsFromLocal:BillProductInput[]
+  billProductsFromLocal:BillProductInput[],
+  countryName:string 
 }
 
 
@@ -53,5 +55,5 @@ export interface ProductInCommentProps {
 
 export interface PaymentProps {
   listCart: BillProductInput[];
-  totalPrice: number;
+ 
 }

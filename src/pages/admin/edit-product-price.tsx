@@ -49,7 +49,7 @@ const EditProductPrice = () => {
   const handleAddFields = () => {
     setPriceFields([
       ...priceFields,
-      { id: uuidv4(), type: "", price: 0, status: 1 },
+      { id: uuidv4(), type: "", price: 0, status: 1,salesPercent:0 },
     ]);
   };
 
@@ -61,6 +61,7 @@ const EditProductPrice = () => {
       type: item.type,
       status: item.status,
       price: item.price,
+      salesPercent:item.salesPercent
     };
     let realId = +id;
     if (realId) {
@@ -99,26 +100,23 @@ const EditProductPrice = () => {
         switch (event!.target.name) {
           case "type":
             return{...field,type:event!.target.value}
-            // field.type = event!.target.value;
-            // break;
+           
 
           case "price":
             return{...field,price:+event!.target.value}
-            // const price = +event!.target.value;
-            // field.price = price;
-            // break;
+         
           case "status":
             return{...field,status:+event!.target.value}
-            // const status = +event!.target.value;
-            // field.status = status;
-            // break;
+            case "salesPercent":
+            return{...field,salesPercent:+event!.target.value}
+          
           default:
             return field
         }
       }
       return field;
     });
-    
+ 
     setPriceFields(newPriceFields);
   };
   return (
@@ -153,6 +151,17 @@ const EditProductPrice = () => {
                         name="price"
                         value={field.price!}
                         placeholder="Price"
+                        className={styles.inputPrice}
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>
+                        ) => {
+                          onFieldChange(field.id, event);
+                        }}
+                      />
+                      <Input
+                        name="salesPercent"
+                        value={field.salesPercent}
+                        placeholder="salesPercent"
                         className={styles.inputPrice}
                         onChange={(
                           event: React.ChangeEvent<HTMLInputElement>

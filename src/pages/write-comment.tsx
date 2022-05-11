@@ -1,7 +1,7 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { useToast } from "@chakra-ui/react";
 import axios from "axios";
-import clsx from "clsx";
+
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -67,7 +67,8 @@ const writeComment = () => {
           isClosable:true,
           status:"success"
         })
-        router.push("/")
+        router.push("/user")
+        router.reload()
       };
   };
 
@@ -119,14 +120,14 @@ const writeComment = () => {
 
             <div className="col l-7 m-7 c-12">
               <div className={styles.imgContainer}>
-                <h3>Sản phẩm đã mua</h3>
+                <h3 className={styles.productPaid}>Sản phẩm đã mua</h3>
                 <div className="row">
                   {commentProps !== null &&
                     commentProps.products.map((item) => (
                       <div className="col l-3 m-6 c-6">
                         <div className={styles.billProductItem}>
                           <img src={item.productThumbnail} />
-                          <h4>{item.productName}</h4>
+                          <h4 className={styles.productName}>{item.productName}</h4>
                         </div>
                       </div>
                     ))}
@@ -203,7 +204,7 @@ const writeComment = () => {
                   >
                     <h1></h1>
                     <button
-                      className={clsx("btnBlackBorder")}
+                      className="btn btn4"
                       onClick={handleCommentsSubmit}
                     >
                       Đánh giá

@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import styles from "../assets/css/components/footer.module.css";
@@ -61,10 +62,12 @@ const Footer = ({ isFixed }: FooterProps) => {
                       </p>
                     </div>
                     <div className={styles.socialIconContainer}>
+                      <Link href="https://m.me/113765614663507">
                       <FontAwesomeIcon
                         icon={faFacebookF}
                         className={clsx(styles.socialIcon, styles.facebookIcon)}
-                      />
+                        />
+                        </Link>
                       <FontAwesomeIcon
                         icon={faInstagram}
                         className={styles.socialIcon}
@@ -91,19 +94,20 @@ const Footer = ({ isFixed }: FooterProps) => {
                         <ChevronRightIcon className={styles.policyIcon} />
                         Chính sách bảo mật
                       </div>
-                      <div className={styles.policyItem}>
+                      <div className={styles.policyItem} onClick={() => router.push("/policy/delivery")}>
                         <ChevronRightIcon className={styles.policyIcon} />
                         Chính sách vận chuyển
                       </div>
-                      <div className={styles.policyItem}>
+                      <div className={styles.policyItem} onClick={() => router.push("/policy/payment")}>
                         <ChevronRightIcon className={styles.policyIcon} />
-                        Chính sách bảo hành
+                        Chính sách thanh toán
                       </div>
-                      <div className={styles.policyItem}>
+                      <div className={styles.policyItem} onClick={() => router.push("/policy/return-product")}>
                         <ChevronRightIcon className={styles.policyIcon} />
-                        Quy định sử dụng
+                        Chính sách đổi trả
                       </div>
-                      <div className={styles.policyItem}>
+                   
+                      <div className={styles.policyItem}  onClick={() => router.push("/policy/service")}>
                         <ChevronRightIcon className={styles.policyIcon} />
                         Điều khoản dịch vụ
                       </div>

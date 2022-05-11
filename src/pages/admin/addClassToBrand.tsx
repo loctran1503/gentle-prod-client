@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styles from "../../assets/css/pages/admin/createEvent.module.css";
 import MySpinner from '../../components/MySpinner';
-import { useAdminAddClassToBrandMutation, useAdminGetProductKindsQuery } from '../../generated/graphql';
+import { useAdminAddClassToBrandMutation, useAdminGetProductClassesQuery } from '../../generated/graphql';
 import { authSelector } from '../../store/reducers/authSlice';
 
 const AddClassToBrand = () => {
@@ -21,7 +21,7 @@ const AddClassToBrand = () => {
       router.push("/page-404");
  
   }, []);
-    const { data } = useAdminGetProductKindsQuery();
+    const { data } = useAdminGetProductClassesQuery();
     const [adminAddClassToBrand] = useAdminAddClassToBrandMutation()
     const [classId,setClassId] = useState(0);
   const router = useRouter()
@@ -54,7 +54,7 @@ const AddClassToBrand = () => {
                  }
                >
                  {data &&
-                   data.adminGetProductKinds.classes?.map((item) => (
+                   data.adminGetProductClasses.classes?.map((item) => (
                      <option key={item.id} value={item.id}>
                        {item.name}
                      </option>

@@ -14,10 +14,7 @@ query GetWebData($localBillProducts: [BillProductInput!]!) {
       productAmount
       productThumbnail
       priceIdForLocal
-    }
-    kinds {
-      id
-      name
+      countryNameForDeliveryPrice
     }
     brands {
       id

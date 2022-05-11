@@ -1,16 +1,30 @@
-import { Button, Input } from "@chakra-ui/react";
+import {
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from "@chakra-ui/react";
+import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "../../assets/css/pages/admin/takeMoneyField.module.css";
+import LocalLoading from "../../components/LocalLoading";
 import MySpinner from "../../components/MySpinner";
 import Navbar from "../../components/Navbar";
 import {
   useAdminGetTakeMoneyFieldsQuery,
   useAdminTakeMoneyFieldCancelMutation,
-  useAdminTakeMoneyFieldCompletedMutation
+  useAdminTakeMoneyFieldCompletedMutation,
 } from "../../generated/graphql";
 import { authSelector } from "../../store/reducers/authSlice";
+import { IMAGESUCCESS } from "../../utils/other/constants";
 import { MoneyConverter } from "../../utils/other/ConvertToMoney";
 
 const takeMoneyField = () => {
@@ -29,41 +43,77 @@ const takeMoneyField = () => {
 
   const { data, error } = useAdminGetTakeMoneyFieldsQuery();
   const [adminHandleTakeMoneyField] = useAdminTakeMoneyFieldCompletedMutation();
-  const [cancelTakeMoneyField] = useAdminTakeMoneyFieldCancelMutation()
-  const [cancelReason,setCancelReason] = useState("")
+  const [cancelTakeMoneyField] = useAdminTakeMoneyFieldCancelMutation();
+  const [cancelReason, setCancelReason] = useState("");
+  const [imageSuccess, setImageSuccess] = useState("");
+  const [itemId, setItemId] = useState(0);
+  const [localLoading,setLocalLoading] = useState(false)
+  const {
+    isOpen: successIsOpen,
+    onOpen: successOnOpen,
+    onClose: successOnClose,
+  } = useDisclosure();
+  const {
+    isOpen: failIsOpen,
+    onOpen: failOnOpen,
+    onClose: failOnClose,
+  } = useDisclosure();
   useEffect(() => {
     if (error) console.log(error);
     console.log(data);
   }, [error, data]);
 
-
   const handleSubmit = async (id: number) => {
+   if(imageSuccess!==""){
     const res = await adminHandleTakeMoneyField({
       variables: {
         fieldId: id,
-
+        imageSuccess,
       },
     });
-    if (res.errors) console.log(res.errors);
-    if (res.data?.adminTakeMoneyFieldCompleted.success)
-      router.push("/admin/dashboard");
-    console.log(res.data?.adminTakeMoneyFieldCompleted);
+    if (res.errors) alert(res.errors);
+    if (res.data?.adminTakeMoneyFieldCompleted.success) {
+      setImageSuccess("");
+      router.reload();
+    }
+    if (!res.data?.adminTakeMoneyFieldCompleted.success) {
+      alert(res.data?.adminTakeMoneyFieldCompleted.message);
+    }
+   }
   };
   const handleCancel = async (id: number) => {
-    const res = await cancelTakeMoneyField({
-      variables:{
-        cancelReason,
-        fieldId:id
+    if(cancelReason!==""){
+      const res = await cancelTakeMoneyField({
+        variables: {
+          cancelReason,
+          fieldId: id,
+        },
+      });
+      if (res.data?.adminTakeMoneyFieldCancel.success) {
+        router.reload();
       }
-    })
-    if(res.data?.adminTakeMoneyFieldCancel.success){
-      router.reload()
-    }
-    if(!res.data?.adminTakeMoneyFieldCancel.success){
-      alert(res.data?.adminTakeMoneyFieldCancel.message)
+      if (!res.data?.adminTakeMoneyFieldCancel.success) {
+        alert(res.data?.adminTakeMoneyFieldCancel.message);
+      }
     }
   };
-  
+
+  const handleImageSuccessChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setLocalLoading(true)
+    const file: File = event.target.files![0];
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", IMAGESUCCESS);
+    const result = await axios.post(
+      "https://api.cloudinary.com/v1_1/perfumeblog/image/upload",
+      formData
+    );
+    setImageSuccess(result.data.secure_url);
+    setLocalLoading(false)
+  };
+
   return (
     <div>
       <Navbar />
@@ -95,25 +145,28 @@ const takeMoneyField = () => {
                           Số tiền hiện có:{" "}
                           <span style={{ marginLeft: 12 }}>
                             {" "}
-                            {MoneyConverter(item.user.moneyCount)}
+                            {MoneyConverter(item.user.moneyDepot!)}
                           </span>
                         </h2>
                       </div>
                       <div className={styles.controlContainer}>
-                        {/* <img src={img} />
-                        <input type="file" onChange={handleImg} /> */}
                         <div className={styles.cancelContainer}>
-                          <Input value={cancelReason} onChange={e => setCancelReason(e.target.value)} placeholder="Cancel reason"/>
                           <Button
                             colorScheme="red"
-                            onClick={() => handleCancel(item.id)}
+                            onClick={() => {
+                              setItemId(item.id);
+                              failOnOpen();
+                            }}
                           >
                             Hủy
                           </Button>
                         </div>
                         <Button
                           colorScheme="green"
-                          onClick={() => handleSubmit(item.id)}
+                          onClick={() => {
+                            setItemId(item.id);
+                            successOnOpen();
+                          }}
                         >
                           Xác nhận
                         </Button>
@@ -125,6 +178,57 @@ const takeMoneyField = () => {
           </div>
         </div>
       </div>
+      {/* Modal */}
+      <>
+        {/* Success */}
+        <Modal isOpen={successIsOpen} onClose={successOnClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>SUCCESS</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              {imageSuccess !== "" && <img src={imageSuccess} />}
+              <input type="file" onChange={handleImageSuccessChange} />
+            </ModalBody>
+
+            <ModalFooter>
+              <Button
+                colorScheme="green"
+                mr={3}
+                onClick={() => handleSubmit(itemId)}
+              >
+                Confirm
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+        {/* Fail */}
+        <Modal isOpen={failIsOpen} onClose={failOnClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>FAIL</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Input
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                placeholder="Cancel reason"
+              />
+            </ModalBody>
+
+            <ModalFooter>
+              <Button
+                colorScheme="green"
+                mr={3}
+                onClick={() => handleCancel(itemId)}
+              >
+                Confirm
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>
+      {localLoading && <LocalLoading/>}
       {isLoading && <MySpinner />}
     </div>
   );

@@ -14,12 +14,9 @@ query AdminGetKindBrandClass {
         id
       }
     }
-    brands{
-          id
-          brandName
-          kind{
-            id
-          }
-        }  
+    brands {
+      id
+      brandName
+    }
   }
 }

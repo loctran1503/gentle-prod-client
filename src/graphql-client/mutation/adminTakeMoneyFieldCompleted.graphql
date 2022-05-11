@@ -1,5 +1,5 @@
-mutation AdminTakeMoneyFieldCompleted($fieldId:Float!){
-     adminTakeMoneyFieldCompleted(fieldId:$fieldId){
+mutation AdminTakeMoneyFieldCompleted($fieldId:Float!,$imageSuccess:String!){
+     adminTakeMoneyFieldCompleted(fieldId:$fieldId,imageSuccess:$imageSuccess){
         code
         success
         message

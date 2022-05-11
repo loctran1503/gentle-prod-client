@@ -10,10 +10,6 @@ query GetBrandWithProducts($paginationOptions:PaginationOptionsInput!) {
       brandName
       thumbnail
       description
-      kind{
-        id
-        name
-      }
       productClasses{
         id
         name
@@ -21,7 +17,9 @@ query GetBrandWithProducts($paginationOptions:PaginationOptionsInput!) {
       products{
       id
       productName
-      priceToDisplay
+      salesPercent
+      minPrice
+      maxPrice
       commentCount
       averageRating
       sales

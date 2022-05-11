@@ -43,22 +43,23 @@
     margin: 0 8px;
   }
   .productItem {
-    padding: 12px;
+    padding: 20px;
     font-weight: 400;
     font-size: 1rem;
-  
+    margin-top: 20px;
     cursor: pointer;
   }
-  .productItem img {
+  .productType img {
     width: 100%;
-    height: 200px;
+    height: 180px;
     object-fit: cover;
-    transition: all 0.5s;
+   
   }
   .productType {
     position: relative;
+    transition: all 0.5s;
   }
-  .productType div {
+  .productClassContainer {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -69,28 +70,70 @@
     color: white;
     text-transform: uppercase;
   }
-  .productItem:hover img {
+  .salesContainer {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    padding: 2px;
+    top: -10%;
+    right: 0;
+    display: flex;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    font-family: "Oswald";
+    background-color: black;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+  }
+  .salesContainerNone{
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    padding: 2px;
+    top: -10%;
+    right: 0;
+    display: flex;
+    opacity: 0;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    font-family: "Oswald";
+    background-color: black;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+  }
+  .salesContainer h2 {
+    font-size: 0.8rem;
+  }
+  .productItem:hover .productType {
     transform: scale(1.1);
   }
   
   .productName {
+    text-align: center;
     padding: 12px 0;
     font-weight: 400;
     font-size: 1rem;
     color: black;
     border-bottom: 1px solid black;
+   
+  
+    height: 4.2rem;
+  }
+  .productName h2{
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* number of lines to show */
-    line-clamp: 2;
+    -webkit-line-clamp: 2; 
+    line-clamp: 2; 
     -webkit-box-orient: vertical;
-    height: 4.4rem;
   }
   .productNameAndRating {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    margin-top: 4px;
   }
   .productItem h3 {
     margin-top: 6px;
@@ -103,9 +146,13 @@
   }
   
   .paidInfo {
-   
     display: flex;
     justify-content: space-between;
+  }
+  .paidInfo h4 {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--grey-color);
   }
   
   .paidController {

@@ -6,19 +6,15 @@ import { useSelector } from "react-redux";
 import styles from "../../assets/css/pages/admin/dashboard.module.css";
 import MySpinner from "../../components/MySpinner";
 import Navbar from "../../components/Navbar";
-import {
-  useAdminDashboardLazyQuery
-} from "../../generated/graphql";
+import { useAdminDashboardLazyQuery } from "../../generated/graphql";
 import { authSelector } from "../../store/reducers/authSlice";
 import { BillStatusType } from "../../utils/type/BillStatusType";
-
 
 const dashboard = () => {
   // useCheckAdmin();
 
-  const [adminDashboard, { data }] =
-    useAdminDashboardLazyQuery();
-  const [localLoading,setLocalLoading] = useState(true)
+  const [adminDashboard, { data }] = useAdminDashboardLazyQuery();
+  const [localLoading, setLocalLoading] = useState(true);
   const router = useRouter();
   const { type, isAuthenticated, isLoading } = useSelector(authSelector);
 
@@ -26,7 +22,7 @@ const dashboard = () => {
     const query = async () => {
       if (!isLoading && isAuthenticated && type === "admin") {
         await adminDashboard();
-        setLocalLoading(false)
+        setLocalLoading(false);
       } else {
         router.push("/page-404");
       }
@@ -167,28 +163,35 @@ const dashboard = () => {
               </div>
               <div className={styles.item}>
                 <h2>Thương hiệu</h2>
+                <div className={styles.controlContainer}></div>
                 <div className={styles.controlContainer}>
                   <Link href="/admin/createBrand">
-                    <Button className={styles.btn}>Thêm thương hiệu</Button>
-                  </Link>
-                </div>
-                <div className={styles.controlContainer}>
-                  <Link href="/admin/createBrand">
-                    <Button className={styles.btn}>Thêm Class vào Thương hiệu</Button>
+                    <Button className={styles.btn}>
+                      Thêm Class vào Thương hiệu
+                    </Button>
                   </Link>
                 </div>
               </div>
               <div className={styles.item}>
                 <h2>Sản phẩm</h2>
                 <div className={styles.controlContainer}>
-                  <Link href="/admin/createProduct">
-                    <Button className={styles.btn}>Thêm sản phẩm</Button>
+                <Link href="/admin/createCountry">
+                    <Button className={styles.btn}>Thêm Country</Button>
                   </Link>
-                  <Link href="/admin/createProductKind">
+                <Link href="/admin/createProductKind">
                     <Button className={styles.btn}>Thêm ProductKind</Button>
                   </Link>
+                  
+               
                   <Link href="/admin/createProductClass">
                     <Button className={styles.btn}>Thêm ProductClass</Button>
+                  </Link>
+                  <Link href="/admin/createBrand">
+                    <Button className={styles.btn}>Thêm thương hiệu</Button>
+                  </Link>
+                 
+                  <Link href="/admin/createProduct">
+                    <Button className={styles.btn}>Thêm sản phẩm</Button>
                   </Link>
                 </div>
               </div>
@@ -196,7 +199,7 @@ const dashboard = () => {
           </div>
         </div>
       </div>
-      {localLoading && <MySpinner/>}
+      {localLoading && <MySpinner />}
     </div>
   );
 };

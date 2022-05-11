@@ -1,18 +1,25 @@
-query GetProductsForIndex($take: Float!) {
-  getProductsForIndex(take: $take) {
+query GetProductsForIndex($countryName:String!) {
+  getProductsForIndex(countryName:$countryName) {
     code
     success
     message
     kinds {
       id
       name
+      countries{
+        countryName
+      }
       products {
         id
         productName
+
         averageRating
         sales
         thumbnail
-        priceToDisplay
+        maxPrice
+        minPrice
+        salesPercent
+        priceAfterDiscount
         commentCount
         class {
           name

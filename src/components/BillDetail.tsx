@@ -1,5 +1,5 @@
 import {
-  Badge,
+
   Button,
   Modal,
   ModalBody,
@@ -11,6 +11,8 @@ import React, { useEffect } from "react";
 import styles from "../assets/css/pages/billDetail.module.css";
 import { Bill } from "../generated/graphql";
 import { MoneyConverter } from "../utils/other/ConvertToMoney";
+import { BillStatusType } from "../utils/type/BillStatusType";
+import MyBadge from "./MyBadge";
 
 
 interface BillDetailProps {
@@ -65,9 +67,7 @@ const BillDetail = ({ bill, callbackToClose }: BillDetailProps) => {
                               <h2 className={styles.bodyHeading}>
                                 Thông tin đơn hàng
                               </h2>
-                              <Badge variant="solid" colorScheme="red">
-                                {bill?.billStatus}
-                              </Badge>
+                              <MyBadge name={bill?.billStatus as  BillStatusType}/>
                             </div>
                             <div className={styles.orderBasicInfo}>
                               <h2>

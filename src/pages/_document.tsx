@@ -1,7 +1,6 @@
 import { ColorModeScript } from "@chakra-ui/react";
 import NextDocument, { Head, Html, Main, NextScript } from "next/document";
 
-
 export default class Document extends NextDocument {
   render() {
     return (
@@ -23,6 +22,7 @@ export default class Document extends NextDocument {
             href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
             rel="stylesheet"
           />
+         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
         </Head>
         <body>
           {/* Make Color mode to persists when you refresh the page. */}

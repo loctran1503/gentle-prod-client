@@ -1,15 +1,16 @@
-import { ChevronRightIcon } from "@chakra-ui/icons";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { Badge, Button, useToast } from "@chakra-ui/react";
 import {
   faCartPlus,
   faCircleCheck,
   faMinus,
-  faPlus
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
 import { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
+import Carousel from "nuka-carousel";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import StarRatings from "react-star-ratings";
@@ -23,19 +24,22 @@ import {
   GetProductDocument,
   GetProductQuery,
   Price,
-  Product
+  Product,
 } from "../../generated/graphql";
 import { authSelector } from "../../store/reducers/authSlice";
 import {
-  setBillProductsFromLocal, setEditProductPriceProps,
-  setPaymentProps
+
+  setBillProductsFromLocal,
+  setEditProductPriceProps,
+  setPaymentProps,
 } from "../../store/reducers/localSlice";
 import { client } from "../../utils/lib/ApolloClient";
 import { MoneyConverter } from "../../utils/other/ConvertToMoney";
-import { EditProductPriceProps } from "../../utils/type/redux/reduxType";
+import {
+  EditProductPriceProps,
+  PaymentProps,
+} from "../../utils/type/redux/reduxType";
 import { PriceFieldsProps } from "../admin/createProduct";
-import { PaymentProps } from "../payment";
-
 
 interface Props {
   product: Product;
@@ -43,17 +47,15 @@ interface Props {
 
 const ProductId: NextPage<Props> = ({ product }) => {
   const router = useRouter();
-  const [mySpinner,setMySpinner] = useState(true)
+  const [mySpinner, setMySpinner] = useState(true);
 
   const [amount, setAmount] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [priceBeforeDiscount, setPriceBeforeDiscount] = useState(0);
   const { type } = useSelector(authSelector);
-  
-
-  const [productThumbnail,setProductThumbnail] = useState("")
-  
 
 
+  const [productThumbnail, setProductThumbnail] = useState("");
 
   const dispatch = useDispatch();
   const toast = useToast();
@@ -64,17 +66,16 @@ const ProductId: NextPage<Props> = ({ product }) => {
     productThumbnail: "",
     priceIdForLocal: 0,
     productType: "",
+    countryNameForDeliveryPrice: "",
   });
 
   //UseEffect
 
-  
-
   useEffect(() => {
     if (product === null) {
       router.push("/page-404");
-    }else{
-      setMySpinner(false)
+    } else {
+      setMySpinner(false);
     }
   }, []);
 
@@ -82,39 +83,37 @@ const ProductId: NextPage<Props> = ({ product }) => {
     setTotalPrice(amount * priceChecked.productPrice);
   }, [amount, priceChecked]);
 
-
-  useEffect(() =>{
-    if(product.thumbnail && product.imgDescription.length>0){
-      setProductThumbnail(product.thumbnail)
+  useEffect(() => {
+    if (product.thumbnail && product.imgDescription.length > 0) {
+      setProductThumbnail(product.thumbnail);
     }
-
-  },[product])
+  }, [product]);
 
   // handle
 
-
-  
   const handleTypeChange = (price: Price) => {
     setPriceChecked({
       priceIdForLocal: price.id,
       productName: product.productName,
       productAmount: amount,
-      productPrice: price.price,
+      productPrice: price.priceAfterDiscount,
       productThumbnail: product.thumbnail,
       productType: price.type,
+      countryNameForDeliveryPrice:product.country.countryName
     });
+    setPriceBeforeDiscount(price.price);
   };
 
   const handlePayNow = () => {
     if (totalPrice === 0) {
       toast({
-        title:"LỖI",
-        description:"Bạn chưa chọn sản phẩm",
-        status:"error",
-        isClosable:true,
-        position:"top",
-        duration:700
-      })
+        title: "LỖI",
+        description: "Bạn chưa chọn sản phẩm",
+        status: "error",
+        isClosable: true,
+        position: "top",
+        duration: 700,
+      });
     } else {
       const type = product.prices.find(
         (item) => item.id === priceChecked.priceIdForLocal
@@ -125,14 +124,14 @@ const ProductId: NextPage<Props> = ({ product }) => {
           productName: product.productName,
           productThumbnail: product.thumbnail,
           productAmount: amount,
-          productPrice: type!.price,
+          productPrice: priceChecked.productPrice,
           productType: type!.type,
           priceIdForLocal: type?.id,
+          countryNameForDeliveryPrice: product.country.countryName,
         },
       ];
       const props: PaymentProps = {
         listCart: listTemp,
-        totalPrice,
       };
       dispatch(setPaymentProps(props));
 
@@ -161,11 +160,8 @@ const ProductId: NextPage<Props> = ({ product }) => {
               JSON.stringify(localBillProductsTemp)
             );
 
-         
-            dispatch(setBillProductsFromLocal(localBillProductsTemp))
+            dispatch(setBillProductsFromLocal(localBillProductsTemp));
           } else {
-            
-
             localBillProductsTemp.push({
               priceIdForLocal: priceChecked.priceIdForLocal,
               productAmount: amount,
@@ -173,12 +169,13 @@ const ProductId: NextPage<Props> = ({ product }) => {
               productThumbnail: priceChecked.productThumbnail,
               productPrice: priceChecked.productPrice,
               productType: priceChecked.productType,
+              countryNameForDeliveryPrice: product.country.countryName,
             });
             localStorage.setItem(
               "localBillProducts",
               JSON.stringify(localBillProductsTemp)
             );
-            dispatch(setBillProductsFromLocal(localBillProductsTemp))
+            dispatch(setBillProductsFromLocal(localBillProductsTemp));
           }
         } else {
           let localBillProductsTemp: BillProductInput[] = [];
@@ -189,14 +186,16 @@ const ProductId: NextPage<Props> = ({ product }) => {
             productThumbnail: priceChecked.productThumbnail,
             productPrice: priceChecked.productPrice,
             productType: priceChecked.productType,
+            countryNameForDeliveryPrice: product.country.countryName,
           };
           localBillProductsTemp.push(item);
+          console.log(localBillProductsTemp)
           localStorage.setItem(
             "localBillProducts",
             JSON.stringify(localBillProductsTemp)
           );
-        
-          dispatch(setBillProductsFromLocal(localBillProductsTemp))
+
+          dispatch(setBillProductsFromLocal(localBillProductsTemp));
         }
         setPriceChecked({
           productName: "",
@@ -205,6 +204,7 @@ const ProductId: NextPage<Props> = ({ product }) => {
           productThumbnail: "",
           priceIdForLocal: 0,
           productType: "",
+          countryNameForDeliveryPrice: "",
         });
         setAmount(1);
       }
@@ -218,18 +218,15 @@ const ProductId: NextPage<Props> = ({ product }) => {
       });
     } else {
       toast({
-        title:"LỖI",
-        description:"Bạn chưa chọn sản phẩm",
-        status:"error",
-        isClosable:true,
-        position:"top",
-        duration:700
-      })
-
+        title: "LỖI",
+        description: "Bạn chưa chọn sản phẩm",
+        status: "error",
+        isClosable: true,
+        position: "top",
+        duration: 700,
+      });
     }
   };
-
-
 
   const handleAMountChange = (type: string) => {
     switch (type) {
@@ -244,8 +241,6 @@ const ProductId: NextPage<Props> = ({ product }) => {
     }
   };
 
-
-
   const convertToPriceFieldProps = (): PriceFieldsProps[] => {
     const field: PriceFieldsProps[] = product.prices.map((item) => {
       const fieldItem: PriceFieldsProps = {
@@ -253,6 +248,7 @@ const ProductId: NextPage<Props> = ({ product }) => {
         type: item.type,
         status: item.status,
         price: item.price,
+        salesPercent: item.salesPercent!,
       };
       return fieldItem;
     });
@@ -262,279 +258,333 @@ const ProductId: NextPage<Props> = ({ product }) => {
   return (
     <div>
       <Navbar />
-      {product && <div className={clsx("distance", styles.productIdDistance)}>
-        <div className={styles.bgProductRedirect}>
-          <div className="grid wide">
-            <div className="row">
-              <div className="col l-12 m-12 c-12">
-                <div className={styles.productNameAndBrand}>
-                  <div className={styles.redirectContainer}>
-                    <p
-                      className={styles.redirectName}
-                      onClick={() => router.push("/")}
-                    >
-                      Trang chủ
-                    </p>
-                    <ChevronRightIcon className={styles.redirectIcon} />
-                    <p
-                      className={styles.redirectName}
-                      onClick={() =>
-                        router.push({
-                          pathname: `/kind/${product.kind.id}`,
-                          query: { kindId: product.kind.id },
-                        })
-                      }
-                    >
-                      {product.kind.name}
-                    </p>
-                    <ChevronRightIcon className={styles.redirectIcon} />
-                    <p
-                      className={styles.redirectName}
-                      onClick={() =>
-                        router.push({
-                          pathname: `/brand/${product.brand.id}`,
-                          query: { brandId: product.brand.id },
-                        })
-                      }
-                    >
-                      {product.brand.brandName}
-                    </p>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="grid wide">
-          {/* Product */}
-          <div className={styles.wrapper}>
-            <div className="row">
-              {/* Image */}
-              <div className="col l-4 m-4 c-12">
-                <div className={styles.imgContainer}>
-                  <img
-                    src={productThumbnail}
-                    
-                  />
-                  <div className={styles.imgOther}>
-                    <div className="row">
-                      {product.imgDescription.map((item, index) => (
-                        <div
-                          className="col l-4 m-4 c-4"
-                          key={index}
-                          onClick={() => {
-                            setProductThumbnail(item)
-                          }}
-                        >
-                          <img src={item} />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Info */}
-              <div className="col l-4 m-4 c-12">
-                <div className={styles.productControlContainer}>
-                  <div className={styles.productInfoContainer}>
-                    <h2 className={clsx(styles.productName,"textCapitalize")}>
-                      {product.productName}
-                    </h2>
-                    <div className={styles.component}>
-                      <p>
-                        Loại sản phẩm:
-                        <span className={styles.brandText}>
-                          {product.kind.name}
-                        </span>
-                      </p>
-                      <p>
-                        Thương hiệu:
-                        <span className={styles.brandText}>
-                          {product.brand.brandName}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                  {/* total Price */}
-                  <div className={styles.totalPrice}>
-                      {MoneyConverter(totalPrice)}
-                  </div>
-                  <div className={styles.typeContainer}>
-                    <h3 className={styles.priceTextheader}>Dung tích</h3>
-                    <div className="row">
-                      {/* Price */}
-                     
-                      {product.prices.map((price) => (
-                        <div className="col l-4 c-4 m-4" key={price.id}>
-                          <div style={{ position: "relative" }}>
-                            <input
-                              type="radio"
-                              className={styles.inputType}
-                              checked={
-                                priceChecked.productPrice === price.price
-                              }
-                              onChange={() => handleTypeChange(price)}
-                            />
-                            <div className={styles.typeItem}>
-                              <h4 className={styles.type}>{price.type}</h4>
-                              <h4 className={styles.price}>
-                                {MoneyConverter(price.price)}
-                              </h4>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  {/* button */}
-                  <div className={styles.priceControl}>
-                    <div className="row">
-                      <div className="col l-4 m-4 c-4">
-                      <h3 className={styles.priceTextheader}>Số lượng</h3>
-                        <div className={styles.amountControl}>
-                          <FontAwesomeIcon
-                            icon={faMinus}
-                            className={styles.amountIcon}
-                            onClick={() => {
-                              handleAMountChange("DOWN");
-                            }}
-                          />
-                          <p>{amount}</p>
-                          <FontAwesomeIcon
-                            icon={faPlus}
-                            className={styles.amountIcon}
-                            onClick={() => {
-                              handleAMountChange("UP");
-                            }}
-                          />
-                        </div>
-                      </div>
-                  
-                    </div>
-                  </div>
-                  <div className={styles.buttonControl}>
-                    <div className="row">
-                      <div className="col l-4 m-4 c-4">
-                        <div className={styles.icon} onClick={handleAddToCart}>
-                          <FontAwesomeIcon icon={faCartPlus} />
-                        </div>
-                      </div>
-                      <div className="col l-8 m-8 c-8">
-                        <button className="btn btn4" onClick={handlePayNow}>
-                          Mua ngay
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Relate */}
-              <div className="col l-4 m-4 c-12">
-                <div className={styles.introContainer}>
-                  <h4>CAM KẾT</h4>
-                  <p>Tư vấn, hỗ trợ 24/7.</p>
-                  <p>
-                    Chỉ kinh doanh những sản phẩm đảm bảo nguồn gốc và chất
-                    lượng.
-                  </p>
-                  <p>Miễn phí đổi trả nếu sản phẩm có vấn đề.</p>
-                  <p>Miễn phí vận chuyển với đơn hàng trên 500.000đ.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* Comment */}
-          <div className="row">
-            <div className="col l-12 m-12 c-12">
-              <div className={styles.reviewContainer}>
-                <h1 className={styles.commentHeader}>Mô tả</h1>
-                <p>{product.description}</p>
-              </div>
+      {product && (
+        <div className={clsx("distance", styles.productIdDistance)}>
+          <div className={styles.bgProductRedirect}>
+            <div className="grid wide">
               <div className="row">
                 <div className="col l-12 m-12 c-12">
-                  <div className={styles.commentContainer}>
-                    <div className={clsx(styles.commentHeader,styles.review)}>
-                      <h1>Đánh giá</h1>
+                  <div className={styles.productNameAndBrand}>
+                    <div className={styles.redirectContainer}>
+                      <p
+                        className={styles.redirectName}
+                        onClick={() => router.push("/")}
+                      >
+                        Trang chủ
+                      </p>
+                      <ChevronRightIcon className={styles.redirectIcon} />
+                      <p
+                        className={styles.redirectName}
+                        onClick={() =>
+                          router.push({
+                            pathname: `/kind/${product.kind.id}`,
+                            query: { kindId: product.kind.id,countryName: product.country.countryName},
+                          })
+                        }
+                      >
+                        {product.kind.name}
+                      </p>
+                      <ChevronRightIcon className={styles.redirectIcon} />
+                      <p
+                        className={styles.redirectName}
+                        onClick={() =>
+                          router.push({
+                            pathname: `/brand/${product.brand.id}`,
+                            query: { brandId: product.brand.id },
+                          })
+                        }
+                      >
+                        {product.brand.brandName}
+                      </p>
                     </div>
-
-                    {product.comments &&
-                      product.comments?.map((item) => (
-                        <div
-                          className={styles.commentItem}
-                          key={` ${item.user.userName}_${item.user.userAvatar}_${item.content}_${item.createdAt}`}
-                        >
-                          <div className={styles.userInfo}>
-                            <img src={item.user.userAvatar} />
-
-                            <div className={styles.userNameContainer}>
-                              <h2>{item.user.userName} </h2>
-                              <Badge
-                                variant="outline"
-                                colorScheme="green"
-                                className={styles.paidChecked}
-                              >
-                                Đã mua hàng
-                              </Badge>
-                              <FontAwesomeIcon
-                                icon={faCircleCheck}
-                                className={styles.paidCheckedIcon}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="grid wide">
+            {/* Product */}
+            <div className={styles.wrapper}>
+              <div className="row">
+                {/* Image */}
+                <div className="col l-4 m-4 c-12">
+                  <div className={styles.imgContainer}>
+                    <img src={productThumbnail} />
+                    <div className={styles.imgOther}>
+                      <div className="row">
+                        <div className="col l-12 m-12 c-12">
+                          <Carousel
+                            speed={200}
+                            swiping={true}
+                            slidesToShow={3}
+                            wrapAround
+                            cellSpacing={16}
+                            defaultControlsConfig={{
+                              pagingDotsStyle: { display: "none" },
+                              prevButtonStyle: { display: "none" },
+                              nextButtonStyle: { display: "none" },
+                            }}
+                            renderCenterLeftControls={({ previousSlide }) => (
+                                  <button onClick={previousSlide} className={styles.btnSliderLeft}>
+                                    <ChevronLeftIcon/>
+                                  </button>
+                                )}
+                                renderCenterRightControls={({ nextSlide }) => (
+                                  <button onClick={nextSlide} className={styles.btnSliderRight}>
+                                     <ChevronRightIcon/>
+                                  </button>
+                                )}
+                          >
+                            {product.imgDescription.map((item, index) => (
+                              <img
+                                src={item}
+                                key={index}
+                                onClick={() => {
+                                  setProductThumbnail(item);
+                                }}
                               />
-                            </div>
-                          </div>
-                          {item.rating > 0 && (
-                            <div className={styles.ratingContainer}>
-                              <StarRatings
-                                starRatedColor="black"
-                                rating={item.rating}
-                                starDimension="14px"
-                                starSpacing="1px"
-                              />
-                            </div>
-                          )}
+                            ))}
+                          </Carousel>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* Info */}
+                <div className="col l-4 m-4 c-12">
+                  <div className={styles.productControlContainer}>
+                    <div className={styles.productInfoContainer}>
+                      <h2
+                        className={clsx(styles.productName, "textCapitalize")}
+                      >
+                        {product.productName}
+                      </h2>
+                      <div className={styles.component}>
+                        <p>
+                          Loại sản phẩm:
+                          <span className={styles.brandText}>
+                            {product.kind.name}
+                          </span>
+                        </p>
+                        <p>
+                          Thương hiệu:
+                          <span className={styles.brandText}>
+                            {product.brand.brandName}
+                          </span>
+                        </p>
+                        <p>
+                          Nguồn nhập:
+                          <span className={styles.brandText}>
+                            {product.country.countryName}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                    {/* total Price */}
 
-                          <div className={styles.commentContent}>
-                            {item.content}
-                          </div>
-                          <div className={styles.imageComment}>
-                            {item.imagesComment &&
-                              item.imagesComment.map((item,index) => (
-                                <img src={item} key={index} />
-                              ))}
-                          </div>
-                          {item.feedbacks?.map((feedback) => (
-                            <div
-                              className={styles.feedbackContainer}
-                              key={feedback.createdAt}
-                            >
-                              <div className={styles.adminInfo}>
-                                <img src={feedback.admin.avatar} />
-                                <div className={styles.adminName}>
-                                  {feedback.admin.adminName}
+                    <div className={styles.totalPriceContainer}>
+                      {priceBeforeDiscount > totalPrice ? (
+                        <>
+                          <p className={styles.totalPrice}>
+                            {MoneyConverter(totalPrice)}
+                          </p>
+                          <p className={styles.priceBeforeDiscount}>
+                            {MoneyConverter(priceBeforeDiscount)}
+                          </p>
+                          <div></div>
+                        </>
+                      ) : (
+                        <p className={styles.totalPrice}>
+                          {MoneyConverter(totalPrice)}
+                        </p>
+                      )}
+                    </div>
+                    <div className={styles.typeContainer}>
+                      <h3 className={styles.priceTextheader}>Dung tích</h3>
+                      <div className="row">
+                        {/* Price */}
+
+                        {product.prices.map((price) => {
+                          if (price.status > 0) {
+                            return (
+                              <div className="col l-4 c-4 m-4" key={price.id}>
+                                <div style={{ position: "relative" }}>
+                                  <input
+                                    type="radio"
+                                    className={styles.inputType}
+                                    checked={
+                                      priceChecked.productPrice ===
+                                      price.priceAfterDiscount
+                                    }
+                                    onChange={() => handleTypeChange(price)}
+                                  />
+                                  <div className={styles.typeItem}>
+                                    <h4 className={styles.type}>
+                                      {price.type}
+                                    </h4>
+                                    <h4 className={styles.price}>
+                                      {MoneyConverter(price.priceAfterDiscount)}
+                                    </h4>
+                                  </div>
                                 </div>
                               </div>
-
-                              <p className={styles.adminFeedbackContent}>
-                                {feedback.content}
-                              </p>
-                            </div>
-                          ))}
+                            );
+                          }
+                        })}
+                      </div>
+                    </div>
+                    {/* button */}
+                    <div className={styles.priceControl}>
+                      <div className="row">
+                        <div className="col l-4 m-4 c-4">
+                          <h3 className={styles.priceTextheader}>Số lượng</h3>
+                          <div className={styles.amountControl}>
+                            <FontAwesomeIcon
+                              icon={faMinus}
+                              className={styles.amountIcon}
+                              onClick={() => {
+                                handleAMountChange("DOWN");
+                              }}
+                            />
+                            <p>{amount}</p>
+                            <FontAwesomeIcon
+                              icon={faPlus}
+                              className={styles.amountIcon}
+                              onClick={() => {
+                                handleAMountChange("UP");
+                              }}
+                            />
+                          </div>
                         </div>
+                      </div>
+                    </div>
+                    <div className={styles.buttonControl}>
+                      <div className="row">
+                        <div className="col l-4 m-4 c-4">
+                          <div
+                            className={styles.icon}
+                            onClick={handleAddToCart}
+                          >
+                            <FontAwesomeIcon icon={faCartPlus} />
+                          </div>
+                        </div>
+                        <div className="col l-8 m-8 c-8">
+                          <button className="btn btn4" onClick={handlePayNow}>
+                            Mua ngay
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* Relate */}
+                <div className="col l-4 m-4 c-12">
+                  <div className={styles.introContainer}>
+                    <h4>THÔNG TIN KHÁC</h4>
+                    {product.otherInfo.length > 0 &&
+                      product.otherInfo.map((item, index) => (
+                        <p key={index}>{item}</p>
                       ))}
-                    {/* <div className={styles.commentFooter}>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Comment */}
+            <div className="row">
+              <div className="col l-12 m-12 c-12">
+                <div className={styles.reviewContainer}>
+                  <h1 className={styles.commentHeader} >Mô tả</h1>
+                  <p dangerouslySetInnerHTML={{
+                          __html: product.description,
+                        }}/>
+                </div>
+                <div className="row">
+                  <div className="col l-12 m-12 c-12">
+                    <div className={styles.commentContainer}>
+                      <div
+                        className={clsx(styles.commentHeader, styles.review)}
+                      >
+                        <h1>Đánh giá</h1>
+                      </div>
+
+                      {product.comments &&
+                        product.comments?.map((item) => (
+                          <div
+                            className={styles.commentItem}
+                            key={` ${item.user.userName}_${item.user.userAvatar}_${item.content}_${item.createdAt}`}
+                          >
+                            <div className={styles.userInfo}>
+                              <img src={item.user.userAvatar} />
+
+                              <div className={styles.userNameContainer}>
+                                <h2>{item.user.userName} </h2>
+                                <Badge
+                                  variant="outline"
+                                  colorScheme="green"
+                                  className={styles.paidChecked}
+                                >
+                                  Đã mua hàng
+                                </Badge>
+                                <FontAwesomeIcon
+                                  icon={faCircleCheck}
+                                  className={styles.paidCheckedIcon}
+                                />
+                              </div>
+                            </div>
+                            {item.rating > 0 && (
+                              <div className={styles.ratingContainer}>
+                                <StarRatings
+                                  starRatedColor="black"
+                                  rating={item.rating}
+                                  starDimension="14px"
+                                  starSpacing="1px"
+                                />
+                              </div>
+                            )}
+
+                            <div className={styles.commentContent}>
+                              {item.content}
+                            </div>
+                            <div className={styles.imageComment}>
+                              {item.imagesComment &&
+                                item.imagesComment.map((item, index) => (
+                                  <img src={item} key={index} />
+                                ))}
+                            </div>
+                            {item.feedbacks?.map((feedback) => (
+                              <div
+                                className={styles.feedbackContainer}
+                                key={feedback.createdAt}
+                              >
+                                <div className={styles.adminInfo}>
+                                  <img src={feedback.admin.avatar} />
+                                  <div className={styles.adminName}>
+                                    {feedback.admin.adminName}
+                                  </div>
+                                </div>
+
+                                <p className={styles.adminFeedbackContent}>
+                                  {feedback.content}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        ))}
+                      {/* <div className={styles.commentFooter}>
             {!data?.getComments.hasMore ? (
               <Button onClick={handleLoadmore}>Xem thêm</Button>
             ) : (
               <h4>Bạn đã xem hết bình luận</h4>
             )}
           </div> */}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>}
+      )}
       <Footer />
       {type === "admin" ? (
         <div className="adminControl">
@@ -555,8 +605,8 @@ const ProductId: NextPage<Props> = ({ product }) => {
       ) : (
         <span></span>
       )}
-      
-      {mySpinner && <MySpinner/>}
+
+      {mySpinner && <MySpinner />}
     </div>
   );
 };
@@ -594,7 +644,7 @@ const ProductId: NextPage<Props> = ({ product }) => {
 // };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { data} = await client.query<GetProductQuery>({
+  const { data } = await client.query<GetProductQuery>({
     query: GetProductDocument,
     variables: { productId: query.productId },
   });

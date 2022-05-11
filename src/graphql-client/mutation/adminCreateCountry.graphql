@@ -1,0 +1,7 @@
+mutation AdminCreateCountry($countryName:String!){
+  adminCreateCountry(countryName:$countryName){
+    code
+    success
+    message
+  }
+}

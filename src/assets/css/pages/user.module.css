@@ -140,7 +140,7 @@
   height: 68px;
 }
 .productName {
- 
+  text-transform: capitalize;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;

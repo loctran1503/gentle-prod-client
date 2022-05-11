@@ -2,11 +2,37 @@
     margin: 8px 20px ;
     padding: 20px;
     border: 1px solid black;
+    
+}
+.heading{
     text-align: center;
+}
+.body{
+    margin-top: 20px;
 }
 .paymentSuccessContainer h1{
     font-size: 1.2rem;
     text-align: center;
+}
+.bodyItem{
+    margin: 8px 0 8px 10px;
+   
+}
+.deliveryDetail{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    justify-content: flex-end;
+}
+.deliveryDetail:hover{
+    transform: translateX(8px);
+}
+.deliveryDetail p{
+    font-weight: 500;
+    text-decoration: underline;
 }
 
 .backContainer{

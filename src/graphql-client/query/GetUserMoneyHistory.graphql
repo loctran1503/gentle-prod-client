@@ -6,7 +6,6 @@ query GetUserMoneyHistory{
     moneyBonuses{
       moneyNumber
       description
-      type
       createdAt
     }
     takeMoneyFields{
@@ -15,8 +14,9 @@ query GetUserMoneyHistory{
       accountNumber
       accountBankName
       cancelReason
+      isSuccessImage
       money
-      isSuccess
+      status
        createdAt
     }
   }

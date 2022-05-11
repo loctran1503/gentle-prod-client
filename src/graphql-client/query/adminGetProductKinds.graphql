@@ -6,11 +6,6 @@ query AdminGetProductKinds{
     kinds{
       id
       name
-     
-    }
-    classes{
-      id
-      name
     }
   }
 }

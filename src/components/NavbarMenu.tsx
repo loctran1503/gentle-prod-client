@@ -62,6 +62,24 @@ const NavbarMenu = () => {
 
           <DrawerBody>
             <div >
+            <div className={styles.navbarMenuItem}>
+                <h3 onClick={() => router.push({
+                        pathname:"/",
+                        query:{countryName:"CHÂU ÂU"}
+                      })}>CHÂU ÂU</h3>
+              </div>
+              <div className={styles.navbarMenuItem}>
+                <h3 onClick={() => router.push({
+                        pathname:"/",
+                        query:{countryName:"HÀN QUỐC"}
+                      })}>HÀN QUỐC</h3>
+              </div>
+              <div className={styles.navbarMenuItem}>
+                <h3 onClick={() => router.push({
+                        pathname:"/",
+                        query:{countryName:"VIỆT NAM"}
+                      })}> VIỆT NAM</h3>
+              </div>
               <div
                 className={clsx(
                   styles.navbarMenuItem,
