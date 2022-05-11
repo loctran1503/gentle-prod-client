@@ -213,7 +213,4 @@ const ShopInfo = () => {
 
 export default memo(ShopInfo);
 
-// <div className={styles.userItem}>
-// <img src="https://scontent-sin6-4.xx.fbcdn.net/v/t1.6435-1/188003145_318861596508649_642500579152781477_n.jpg?stp=dst-jpg_p160x160&_nc_cat=101&ccb=1-5&_nc_sid=7206a8&_nc_ohc=RyZBZjkdD70AX_hsIRZ&_nc_ht=scontent-sin6-4.xx&oh=00_AT936vFRwStLLLOk0dSL28foRPGMOIsFO6JKZ-btuFL7lA&oe=62688297" />
-// <h3>Lộc Trần</h3>
-// </div>
+

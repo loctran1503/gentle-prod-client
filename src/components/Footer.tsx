@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
-import Link from "next/link";
+
 import { useRouter } from "next/router";
 import React from "react";
 import styles from "../assets/css/components/footer.module.css";
@@ -62,12 +62,12 @@ const Footer = ({ isFixed }: FooterProps) => {
                       </p>
                     </div>
                     <div className={styles.socialIconContainer}>
-                      <Link href="https://m.me/113765614663507">
+                      <a href="https://m.me/113765614663507" > 
                       <FontAwesomeIcon
                         icon={faFacebookF}
                         className={clsx(styles.socialIcon, styles.facebookIcon)}
                         />
-                        </Link>
+                        </a>
                       <FontAwesomeIcon
                         icon={faInstagram}
                         className={styles.socialIcon}

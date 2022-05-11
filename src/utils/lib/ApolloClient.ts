@@ -16,6 +16,8 @@ const httpLink = new HttpLink({
   credentials: "include",
 });
 
+
+
 const authMiddleware = new ApolloLink((operation, forward) => {
   const token = JwtManager.getToken();
 
