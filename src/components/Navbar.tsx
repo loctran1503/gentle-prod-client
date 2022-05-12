@@ -247,9 +247,9 @@ const Navbar = () => {
                         </div>
                       </div>
 
-                      <h3 className={styles.navbarCategoryItem}>
+                      {/* <h3 className={styles.navbarCategoryItem}>
                         Về chúng tôi
-                      </h3>
+                      </h3> */}
 
                       <h3
                         className={clsx(styles.navbarCategoryItem)}

@@ -19,13 +19,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "../assets/css/pages/navbarBrand.module.css";
-import { localSelector } from "../store/reducers/localSlice";
-import { charList } from "../utils/other/constants";
+import { localSelector, setCountryName } from "../store/reducers/localSlice";
+import { AMERICA, charList, KOREA } from "../utils/other/constants";
 import { ProductBrandProps } from "../utils/type/redux/reduxType";
 
 const NavbarMenu = () => {
+  const dispatch = useDispatch()
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -63,23 +64,29 @@ const NavbarMenu = () => {
           <DrawerBody>
             <div >
             <div className={styles.navbarMenuItem}>
-                <h3 onClick={() => router.push({
-                        pathname:"/",
-                        query:{countryName:"CHÂU ÂU"}
-                      })}>CHÂU ÂU</h3>
+                <h3 onClick={() => {
+                  dispatch(setCountryName(AMERICA))
+                  router.push({
+                    pathname: "/",
+                    query:{countryName:AMERICA}
+                  })
+                }}>{AMERICA}</h3>
               </div>
               <div className={styles.navbarMenuItem}>
-                <h3 onClick={() => router.push({
-                        pathname:"/",
-                        query:{countryName:"HÀN QUỐC"}
-                      })}>HÀN QUỐC</h3>
+                <h3 onClick={() => {
+                          dispatch(setCountryName(KOREA))
+                          router.push({
+                            pathname: "/",
+                            query:{countryName:KOREA}
+                          })
+                        }}>HÀN QUỐC</h3>
               </div>
-              <div className={styles.navbarMenuItem}>
+              {/* <div className={styles.navbarMenuItem}>
                 <h3 onClick={() => router.push({
                         pathname:"/",
                         query:{countryName:"VIỆT NAM"}
                       })}> VIỆT NAM</h3>
-              </div>
+              </div> */}
               <div
                 className={clsx(
                   styles.navbarMenuItem,

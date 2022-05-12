@@ -60,14 +60,7 @@ const User = () => {
         }
       }
       if (!isLoading && !isAuthenticated) {
-        toast({
-          title: "Lỗi",
-          description: "Bạn không thể vào trang này khi chưa đăng nhập",
-          status: "error",
-          isClosable: true,
-          position: "top",
-          duration: 3000,
-        });
+        
         router.push("/");
       }
     };
