@@ -36,7 +36,7 @@ const BillCancelReason = ({ billId, callBack }: BillCancelReasonProps) => {
         toast({
         title: "Thông báo",
         description:
-          "Cảm ơn quý khách đã ghé thăm cửa hàng, kính chúc quý khách có những giây phút mua sắm thật thoải mái!",
+          "Cảm ơn Bạn đã ghé thăm cửa hàng, kính chúc Bạn có những giây phút mua sắm thật thoải mái!",
         status: "info",
         isClosable: true,
         duration: 5000,
@@ -60,9 +60,9 @@ const BillCancelReason = ({ billId, callBack }: BillCancelReasonProps) => {
           <ModalBody>
             <div>
               <h3>
-                Kính mong quý khách cho chúng tôi xin lý do hủy đơn để chúng tôi
-                có thể cải thiện chất lượng phục vụ cho quý khách, Thành thật
-                cảm ơn quý khách!
+                Mong Bạn cho chúng tôi xin lý do hủy đơn để chúng tôi
+                có thể cải thiện chất lượng phục vụ cho Bạn, Thành thật
+                cảm ơn Bạn!
               </h3>
               <Textarea
                 value={reasonText}

@@ -38,11 +38,11 @@ const Payment = () => {
                     <div className="col l-6 l-o-3 m-6 m-o-3 c-8 c-o-2">
                       <div className={styles.footer}>
                         <p>
-                          Chân thành cảm ơn quý khách đã đọc những thông tin
-                          này, kính chúc quý khách có những giây phút mua sắm
+                          Chân thành cảm ơn Bạn đã đọc những thông tin
+                          này, kính chúc Bạn có những giây phút mua sắm
                           thật thoải mái.Nếu có bất cứ thắc mắc nào, kính mong
-                          quý khách hãy liên hệ với Admin để được giải đáp,
-                          Chúng tôi rất hân hạnh được phục vụ quý khách!
+                          Bạn hãy liên hệ với Admin để được giải đáp,
+                          Chúng tôi rất hân hạnh được phục vụ Bạn!
                         </p>
                       </div>
                     </div>

@@ -237,7 +237,7 @@ const Payment = () => {
       //   toast({
       //     title: "Thông báo ",
       //     description:
-      //       "Với đơn hàng trên 2.000.000đ, quý khách vui lòng chuyển khoản trước tối thiểu 5% hoặc 10% với đơn hàng trên 5.000.000đ để xác nhận đơn hàng,Chân thành Cảm ơn quý khách đã đọc thông tin này!",
+      //       "Với đơn hàng trên 2.000.000đ, Bạn vui lòng chuyển khoản trước tối thiểu 5% hoặc 10% với đơn hàng trên 5.000.000đ để xác nhận đơn hàng,Chân thành Cảm ơn Bạn đã đọc thông tin này!",
       //     status: "info",
       //     duration: 5000,
       //     position: "top",

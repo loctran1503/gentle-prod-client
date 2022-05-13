@@ -62,7 +62,7 @@ const writeComment = () => {
       if (data?.createComments.success){
         toast({
           title:"Thông báo",
-          description:"Cảm ơn quý khách đã gửi đánh giá, chúng tôi thật sự trân trọng mọi ý kiến của quý khách, nếu trong quá trình mua sắm cửa hàng chưa làm tốt, xin quý khách liên hệ Admin để được giải quyết!",
+          description:"Cảm ơn Bạn đã gửi đánh giá, chúng tôi thật sự trân trọng mọi ý kiến của Bạn, nếu trong quá trình mua sắm cửa hàng chưa làm tốt, xin Bạn liên hệ Admin để được giải quyết!",
           duration:4000,
           isClosable:true,
           status:"success"

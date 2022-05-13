@@ -95,8 +95,8 @@ const SearchProduct = () => {
                   <div className={styles.searchTypeContainer} onClick={() =>{
                     toast({
                       status:"info",
-                      title:"Kính chào quý khách",
-                      description:"Tính năng đang trong quá trình hoàn thành, mong quý khách thông cảm.",
+                      title:"Kính chào Bạn",
+                      description:"Tính năng đang trong quá trình hoàn thành, mong Bạn thông cảm.",
                       isClosable:true,
                       position:"top-right",
                       duration:1000
@@ -129,8 +129,8 @@ const SearchProduct = () => {
                 <div className={styles.btnSearch} onClick={() =>{
                     toast({
                       status:"info",
-                      title:"Kính chào quý khách",
-                      description:"Tính năng đang trong quá trình hoàn thành, mong quý khách thông cảm.",
+                      title:"Kính chào Bạn",
+                      description:"Tính năng đang trong quá trình hoàn thành, mong Bạn thông cảm.",
                       isClosable:true,
                       position:"top-right",
                       duration:1000

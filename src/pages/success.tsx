@@ -33,8 +33,8 @@ const Success = () => {
                   <div className={styles.heading}>
                     <h1>Đặt hàng thành công</h1>
                     <p>
-                      Cảm ơn quý khách đã mua hàng,nhân viên cửa hàng sẽ liên
-                      lạc với quý khách để xác nhận đơn hàng!!!
+                      Cảm ơn Bạn đã mua hàng,nhân viên cửa hàng sẽ liên
+                      lạc với Bạn để xác nhận đơn hàng!!!
                     </p>
                   </div>
                   <div className={styles.body}>
@@ -57,7 +57,7 @@ const Success = () => {
                     <h4 className={styles.bodyItem}>
                       *Lưu ý:Với đơn hàng có sản phẩm của nhiều quốc gia khác
                       nhau, thời gian vận chuyển sẽ được tính theo quốc gia có
-                      thời gian vận chuyển lâu nhất. Kính mong quý khách thông
+                      thời gian vận chuyển lâu nhất. Kính mong Bạn thông
                       cảm vì sự bất tiện này.
                     </h4>
                   </div>

@@ -82,7 +82,7 @@ const moneyBonusHistory = () => {
       toast({
         title: "THÔNG BÁO",
         description:
-          "Có lỗi xảy ra, vui lòng liên hệ Admin để được trợ giúp,Thành thật xin lỗi quý khách!",
+          "Có lỗi xảy ra, vui lòng liên hệ Admin để được trợ giúp,Thành thật xin lỗi Bạn!",
         status: "error",
         isClosable: true,
         duration: 3000,
