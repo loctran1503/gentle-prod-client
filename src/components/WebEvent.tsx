@@ -1,13 +1,18 @@
 import Carousel from "nuka-carousel";
 
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import styles from "../assets/css/components/webEvent.module.css";
 import { isMobile } from "react-device-detect";
 import { useRouter } from "next/router";
+import { useGetEventsQuery } from "../generated/graphql";
 
 const WebEvent = () => {
   const router = useRouter();
+  const {data,error} = useGetEventsQuery()
+  useEffect(() =>{
+    if(error) console.log(error)
 
+  },[error]) 
   return (
     <>
       {isMobile ? (
@@ -32,18 +37,19 @@ const WebEvent = () => {
             },
           }}
           >
-            <img
-              src="https://images.pexels.com/photos/8264413/pexels-photo-8264413.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-              onClick={() => {
-                router.push("/events");
-              }}
-            />
-            <img
-              src="https://images.pexels.com/photos/3788293/pexels-photo-3788293.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-              onClick={() => {
-                router.push("/events");
-              }}
-            />
+            {data?.getEvents.success && data.getEvents.myEvents && data.getEvents.myEvents.map(item =>{
+              return (
+                <img
+                key={item.title}
+                src={item.thumbnailForMobile}
+                onClick={() => {
+                  router.push(`/events/${item.title}`);
+                }}
+              />
+
+              )
+            })}
+          
           </Carousel >
         </div>
       ) : (
@@ -66,18 +72,18 @@ const WebEvent = () => {
               display: "none",
             },
           }}>
-            <img
-              src="https://images.pexels.com/photos/8264413/pexels-photo-8264413.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-              onClick={() => {
-                router.push("/events");
-              }}
-            />
-            <img
-              src="https://images.pexels.com/photos/3788293/pexels-photo-3788293.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-              onClick={() => {
-                router.push("/events");
-              }}
-            />
+            {data?.getEvents.success && data.getEvents.myEvents && data.getEvents.myEvents.map(item =>{
+              return (
+                <img
+                key={item.title}
+                src={item.thumbnailForDesktop}
+                onClick={() => {
+                  router.push(`/events/${item.title}`);
+                }}
+              />
+
+              )
+            })}
           </Carousel>
         </div>
       )}

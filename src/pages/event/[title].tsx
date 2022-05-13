@@ -1,8 +1,7 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import React, { useState } from "react";
+import React from "react";
 import styles from "../../assets/css/pages/eventDetail.module.css";
 import Footer from "../../components/Footer";
-import ImageFullScreen from "../../components/ImageFullScreen";
 import Navbar from "../../components/Navbar";
 import RedirectHeader, {
   RedirectHeaderProps
@@ -34,12 +33,8 @@ const item2: RedirectHeaderProps = {
 const list: RedirectHeaderProps[] = [item1, item2];
 
 const Title: NextPage<Props> = ({ data }) => {
-  const [isImageFullScreenOpen, setIsImageFullScreenOpen] = useState(false);
 
-  const callbackFromImageFullScreen = () => {
-    setIsImageFullScreenOpen(false);
-  };
-  const [indexOfImageList, setIndexOfImageList] = useState(0);
+
   return (
     <div>
       <Navbar />
@@ -63,34 +58,12 @@ const Title: NextPage<Props> = ({ data }) => {
                         }}
                         className={styles.content}
                       />
-                      {data.instructionImages && (
-                        <div className={styles.instructionImageContainer}>
-                          <h2 className={styles.textSample}>
-                            Hình ảnh miêu tả
-                          </h2>
-                          <div className={styles.imageContainer}>
-                            <div className="row">
-                              {data.instructionImages?.map((item, index) => (
-                               <div className="col l-3 m-4 c-6">
-                                  <img
-                                  className={styles.imageItem}
-                                  src={item}
-                                  onClick={() => {
-                                    setIndexOfImageList(index);
-                                    setIsImageFullScreenOpen(true);
-                                  }}
-                                />
-                               </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                     
                     </div>
                   </div>
 
                   <div className={styles.footer}>
-                    ---KÍNH CHÚC QUÝ KHÁCH CÓ THẬT NHIỀU NIỀM VUI---
+                    ---KÍNH CHÚC BẠN CÓ THẬT NHIỀU NIỀM VUI VÀ NHIỀU ĐIỀU TÍCH CỰC TRONG CUỘC SỐNG NHA---
                   </div>
                 </div>
               </div>
@@ -99,13 +72,7 @@ const Title: NextPage<Props> = ({ data }) => {
         </div>
       </div>
       <Footer />
-      {data.instructionImages && isImageFullScreenOpen && (
-        <ImageFullScreen
-          urlList={data.instructionImages}
-          callbackToClose={callbackFromImageFullScreen}
-          index={indexOfImageList}
-        />
-      )}
+      
     </div>
   );
 };

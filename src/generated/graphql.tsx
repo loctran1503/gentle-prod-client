@@ -157,7 +157,6 @@ export type Country = {
   __typename?: 'Country';
   countryName: Scalars['String'];
   id: Scalars['Float'];
-  kind?: Maybe<Array<ProductKind>>;
   products?: Maybe<Array<Product>>;
 };
 
@@ -403,17 +402,16 @@ export type MyEvent = {
   content: Scalars['String'];
   createdAt: Scalars['DateTime'];
   id: Scalars['Float'];
-  instructionImages?: Maybe<Array<Scalars['String']>>;
   summary: Scalars['String'];
-  thumbnail: Scalars['String'];
+  thumbnailForDesktop: Scalars['String'];
+  thumbnailForMobile: Scalars['String'];
   title: Scalars['String'];
 };
 
 export type MyEventInput = {
   content: Scalars['String'];
-  instructionImages?: InputMaybe<Array<Scalars['String']>>;
-  summary: Scalars['String'];
-  thumbnail: Scalars['String'];
+  thumbnailForDesktop: Scalars['String'];
+  thumbnailForMobile: Scalars['String'];
   title: Scalars['String'];
 };
 
@@ -560,7 +558,7 @@ export type ProductInput = {
 
 export type ProductKind = {
   __typename?: 'ProductKind';
-  countries?: Maybe<Array<Country>>;
+  countries: Array<Country>;
   createdAt: Scalars['DateTime'];
   id: Scalars['Float'];
   name: Scalars['String'];
@@ -1046,12 +1044,12 @@ export type GetEventQueryVariables = Exact<{
 }>;
 
 
-export type GetEventQuery = { __typename?: 'Query', getEvent: { __typename?: 'MyEventResponse', code: number, success: boolean, message?: string | null, myEvent?: { __typename?: 'MyEvent', title: string, thumbnail: string, content: string, instructionImages?: Array<string> | null, createdAt: any } | null } };
+export type GetEventQuery = { __typename?: 'Query', getEvent: { __typename?: 'MyEventResponse', code: number, success: boolean, message?: string | null, myEvent?: { __typename?: 'MyEvent', title: string, thumbnailForDesktop: string, thumbnailForMobile: string, content: string, createdAt: any } | null } };
 
 export type GetEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetEventsQuery = { __typename?: 'Query', getEvents: { __typename?: 'MyEventResponse', code: number, success: boolean, message?: string | null, myEvents?: Array<{ __typename?: 'MyEvent', title: string, content: string, summary: string, thumbnail: string }> | null } };
+export type GetEventsQuery = { __typename?: 'Query', getEvents: { __typename?: 'MyEventResponse', code: number, success: boolean, message?: string | null, myEvents?: Array<{ __typename?: 'MyEvent', title: string, content: string, thumbnailForDesktop: string, thumbnailForMobile: string }> | null } };
 
 export type GetGiftQueryVariables = Exact<{
   priceCondition: Scalars['Float'];
@@ -1091,7 +1089,7 @@ export type GetProductsForIndexQueryVariables = Exact<{
 }>;
 
 
-export type GetProductsForIndexQuery = { __typename?: 'Query', getProductsForIndex: { __typename?: 'ProductKindResponse', code: number, success: boolean, message?: string | null, kinds?: Array<{ __typename?: 'ProductKind', id: number, name: string, countries?: Array<{ __typename?: 'Country', countryName: string }> | null, products?: Array<{ __typename?: 'Product', id: number, productName: string, averageRating: number, sales?: number | null, thumbnail: string, maxPrice: number, minPrice: number, salesPercent?: number | null, priceAfterDiscount: number, commentCount: number, class: { __typename?: 'ProductClass', name: string } }> | null }> | null } };
+export type GetProductsForIndexQuery = { __typename?: 'Query', getProductsForIndex: { __typename?: 'ProductKindResponse', code: number, success: boolean, message?: string | null, kinds?: Array<{ __typename?: 'ProductKind', id: number, name: string, countries: Array<{ __typename?: 'Country', countryName: string }>, products?: Array<{ __typename?: 'Product', id: number, productName: string, averageRating: number, sales?: number | null, thumbnail: string, maxPrice: number, minPrice: number, salesPercent?: number | null, priceAfterDiscount: number, commentCount: number, class: { __typename?: 'ProductClass', name: string } }> | null }> | null } };
 
 export type GetProductPaidAmountQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2559,9 +2557,9 @@ export const GetEventDocument = gql`
     message
     myEvent {
       title
-      thumbnail
+      thumbnailForDesktop
+      thumbnailForMobile
       content
-      instructionImages
       createdAt
     }
   }
@@ -2604,8 +2602,8 @@ export const GetEventsDocument = gql`
     myEvents {
       title
       content
-      summary
-      thumbnail
+      thumbnailForDesktop
+      thumbnailForMobile
     }
   }
 }

@@ -31,7 +31,7 @@ const item2: RedirectHeaderProps = {
 const list: RedirectHeaderProps[] = [item1, item2];
 const Events: NextPage<Props> = ({ data }) => {
 
-  // const [isLessThan739] = useMediaQuery('(max-width: 1280px)')
+ 
   return (
     <div>
       <Navbar />
@@ -48,7 +48,7 @@ const Events: NextPage<Props> = ({ data }) => {
                       <div className={styles.eventItem}>
                         <div className="row">
                           <div className=" l-2 m-2 c-3">
-                            <img src={item.thumbnail} />
+                            <img src={item.thumbnailForMobile} />
                           </div>
                           <div className=" l-10 m-10 c-9">
                             <div className={styles.itemInfo}>

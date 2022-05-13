@@ -5,9 +5,10 @@ query GetEvent($title:String!){
         message
         myEvent{
             title
-            thumbnail
+            thumbnailForDesktop
+            thumbnailForMobile
             content
- instructionImages
+
             createdAt
         }
     }

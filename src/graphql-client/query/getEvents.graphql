@@ -6,8 +6,9 @@ query getEvents{
     myEvents{
       title
       content
-      summary
-      thumbnail
+      thumbnailForDesktop
+      thumbnailForMobile
+      
      
     }
   }

@@ -45,7 +45,7 @@ export const charList = [
 export const TIME_CELERATED = "11/5/2022"
 
 // Cloudinary
-export const INSTRUCTION_IMAGES = "instructionImages_070699"
+
 export const IMAGESUCCESS = "imageSuccess_070699"
 
 //Error
