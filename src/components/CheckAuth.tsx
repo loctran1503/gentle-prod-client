@@ -50,18 +50,18 @@ const CheckAuth = ({ children }: { children: ReactNode }) => {
             localBillProducts: list,
           },
         });
-        console.log(res.data?.getWebData)
+ 
         switch (true) {
           case res.data?.getWebData.code === 999:
 
             dispatch(setLoading(false));
             break;
           case res.data?.getWebData.code === 200:
-            console.log(res.data?.getWebData)
+       
             if (res.data?.getWebData.type === "admin") {
               dispatch(setType(res.data?.getWebData.type!));
             } else {
-              console.log(res.data?.getWebData.isHidden)
+            
               dispatch(setType(res.data?.getWebData.type!));
               dispatch(setIsHidden(res.data?.getWebData.isHidden!));
             }

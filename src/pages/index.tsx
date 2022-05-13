@@ -30,6 +30,7 @@ interface Props {
 }
 
 const Index: NextPage<Props> = ({ data }) => {
+  console.log(data)
   const { countryName } = useSelector(localSelector);
   const StarRatings = dynamic(() => import("react-star-ratings"));
 

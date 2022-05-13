@@ -38,10 +38,11 @@ const createBrand = () => {
   });
   const [localLoading,setLocalLoading] = useState(false)
   useEffect(() => {
-    if (data?.adminGetProductClasses.classes) {
+    if (data?.adminGetProductClasses.classes && data?.adminGetProductClasses.classes.length>0) {
       setBrand({...brand,productClassId:data.adminGetProductClasses.classes[0].id})
+
     }
-    
+   
   }, [data]);
 
   const handleThumbnail = async (

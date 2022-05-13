@@ -50,7 +50,7 @@ export const client = new ApolloClient({
           getProductsForIndex:{
             keyArgs: false,
             merge(_, incoming) {
-             
+         
               return incoming.products;
             },
           },

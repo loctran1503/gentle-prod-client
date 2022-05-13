@@ -40,7 +40,7 @@ const Footer = ({ isFixed }: FooterProps) => {
                       </div>
                       <div className="col l-8 m-8 c-8">
                         <div className={styles.textIntro}>
-                          Cửa hàng nước hoa GENTLE  thành lập vào 2022. Shop bán các sản phẩm về nước hoa và mỹ phẩm, hỗ trợ ship trên toàn quốc đối với tất cả các khách hàng từ Bắc vào Nam!
+                          Một nơi để mình chia sẻ những sản phẩm Sale ở những cửa hàng chính hãng hoặc ở các website uy tín như SEPHORA,OLIVE YOUNG,... Mình không săn sale sản phẩm ở Amazon,Ebay.Mình luôn cố gắng để cải thiện từng ngày,rất mong được mọi người ủng hộ và góp ý!
                         </div>
                       </div>
                     </div>
@@ -48,16 +48,16 @@ const Footer = ({ isFixed }: FooterProps) => {
                       <p>
                         Địa chỉ:{" "}
                         <span>
-                          Đang cập nhật
+                          60/3 Long Thới, lái thiêu, thuận an, bình dương
                         </span>
                       </p>
                       <p>
-                        Số điện thoại: <span>0123456789</span>
+                        Số điện thoại: <span>0774.917.635</span>
                       </p>
                       <p>
                         Email:{" "}
                         <span className={styles.gmail}>
-                          loc.d19c01a1503@gmail.com
+                          gentlevn.com@gmail.com
                         </span>
                       </p>
                     </div>

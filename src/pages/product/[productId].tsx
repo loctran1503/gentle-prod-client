@@ -506,9 +506,8 @@ const ProductId: NextPage<Props> = ({ product }) => {
                       >
                         <h1>Đánh giá</h1>
                       </div>
-
-                      {product.comments &&
-                        product.comments?.map((item) => (
+                      
+                      {product.comments && product.comments.length>0 ?product.comments?.map((item) => (
                           <div
                             className={styles.commentItem}
                             key={` ${item.user.userName}_${item.user.userAvatar}_${item.content}_${item.createdAt}`}
@@ -569,7 +568,8 @@ const ProductId: NextPage<Props> = ({ product }) => {
                               </div>
                             ))}
                           </div>
-                        ))}
+                        )) : <h2 className={styles.noneComment}>Chưa có đánh giá</h2>
+                        }
                       {/* <div className={styles.commentFooter}>
             {!data?.getComments.hasMore ? (
               <Button onClick={handleLoadmore}>Xem thêm</Button>

@@ -161,17 +161,17 @@ const dashboard = () => {
                   </Link>
                 </div>
               </div>
-              <div className={styles.item}>
+              {/* <div className={styles.item}>
                 <h2>Thương hiệu</h2>
                 <div className={styles.controlContainer}></div>
                 <div className={styles.controlContainer}>
-                  <Link href="/admin/createBrand">
+                   <Link href="/admin/createBrand">
                     <Button className={styles.btn}>
                       Thêm Class vào Thương hiệu
                     </Button>
-                  </Link>
+                  </Link> 
                 </div>
-              </div>
+              </div> */}
               <div className={styles.item}>
                 <h2>Sản phẩm</h2>
                 <div className={styles.controlContainer}>

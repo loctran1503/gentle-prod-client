@@ -736,17 +736,17 @@ const Payment = () => {
                           </div>
                           </div>
                           <div className={styles.infoBank}>
-                            <p>*Vietcombank - LOC TRAN - 0123456789</p>
+                            <p>*Vietcombank - TRAN PHUOC LOC - 0281000647810</p>
                             <p>
                               *Nội dung chuyển khoản:Tên người nhận hàng, Số
                               điện thoại người nhận
                             </p>
-                            <p>*Ví dụ:Lộc, 0123456789</p>
+                            <p>*Ví dụ:Lộc, 0774917635</p>
                             <p>
                               *Liên hệ với admin để được giải đáp mọi thắc mắc
                             </p>
                             <h4 className={styles.thanksClient}>
-                              Chân thành cảm ơn quý khách đã đọc nội dung này!
+                              Chân thành cảm ơn bạn đã đọc nội dung này!
                             </h4>
                           </div>
                         </div>
