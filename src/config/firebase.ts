@@ -8,13 +8,13 @@ import { initializeApp } from "firebase/app";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
   const firebaseConfig = {
-    apiKey: "AIzaSyCnM6ZBzmxyT3W9FRju7nukye2g0LHDegE",
-    authDomain: "gentle-4a381.firebaseapp.com",
-    projectId: "gentle-4a381",
-    storageBucket: "gentle-4a381.appspot.com",
-    messagingSenderId: "553395122105",
-    appId: "1:553395122105:web:bdee46f13c48ea8755d068",
-    measurementId: "G-YYMB16GL5W"
+    apiKey: "AIzaSyA8B4LPwh0wyN4o8278JypBERxiwrASmF0",
+    authDomain: "gentlevn2022.firebaseapp.com",
+    projectId: "gentlevn2022",
+    storageBucket: "gentlevn2022.appspot.com",
+    messagingSenderId: "903301844364",
+    appId: "1:903301844364:web:5261b27ed4f31a6aa5daa9",
+    measurementId: "G-0C7JK8TRFD"
   };
 
 

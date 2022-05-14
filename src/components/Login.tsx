@@ -29,7 +29,7 @@ export const Login = () => {
   const router = useRouter();
   const [userLogin] = useLoginWithSocialsMutation();
   const toast = useToast();
- 
+
   //Login
 
   const handleFacebookLogin = async () => {
@@ -98,7 +98,7 @@ export const Login = () => {
       <div className={styles.loginEvent}>
         <h2 onClick={onOpen}>Đăng nhập</h2>
       </div>
-      <Modal isOpen={isOpen} onClose={onClose} size="xs">
+      <Modal isOpen={isOpen} onClose={onClose} size="sm">
         <ModalOverlay />
         <ModalContent>
           <div className={styles.loginContainer}>
@@ -117,6 +117,7 @@ export const Login = () => {
                   className={styles.iconLogin}
                 />
                 Đăng nhập với Facebook
+                <div></div>
               </div>
               <div
                 className={clsx(
@@ -127,11 +128,16 @@ export const Login = () => {
               >
                 <FontAwesomeIcon icon={faGoogle} className={styles.iconLogin} />
                 Đăng nhập với Google
+                <div></div>
+              </div>
+
+              <div className={styles.detail}>
+              <p>Tôi có nguy cơ bị lộ thông tin cá nhân khi đăng nhập vào trang web này?<span onClick={() => router.push("/policy/user-info-rule")}>Tìm hiểu thêm</span></p>
               </div>
 
               <p className={styles.textRule}>
                 Bằng cách đăng nhập, bạn đã đồng ý với các{" "}
-                <span className={styles.linkRule}>Điều khoản dịch vụ</span> của
+                <span className={styles.linkRule} onClick={() => router.push("/policy/service")}>Điều khoản dịch vụ</span> của
                 chúng tôi.
               </p>
             </div>
