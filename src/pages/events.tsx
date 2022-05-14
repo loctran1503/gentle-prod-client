@@ -1,18 +1,21 @@
 import { Badge } from "@chakra-ui/react";
 import { NextPage } from "next";
-import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../assets/css/pages/events.module.css";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { isMobile } from 'react-device-detect';
-import RedirectHeader, { RedirectHeaderProps } from "../components/RedirectHeader";
+import { isMobile } from "react-device-detect";
+import RedirectHeader, {
+  RedirectHeaderProps,
+} from "../components/RedirectHeader";
 import {
   GetEventsDocument,
   GetEventsQuery,
-  MyEventResponse
+  MyEventResponse,
 } from "../generated/graphql";
 import { client } from "../utils/lib/ApolloClient";
+import { useRouter } from "next/router";
+import MySpinner from "../components/MySpinner";
 
 interface Props {
   data: MyEventResponse;
@@ -27,16 +30,23 @@ const item2: RedirectHeaderProps = {
   url: `/events`,
 };
 
-
 const list: RedirectHeaderProps[] = [item1, item2];
 const Events: NextPage<Props> = ({ data }) => {
-
+  const router = useRouter();
+  const [mySpinner, setMySpinner] = useState(true);
+  useEffect(() => {
  
+    if (!data) {
+      router.push("/page-404");
+    } else {
+      setMySpinner(false);
+    }
+  }, []);
   return (
     <div>
       <Navbar />
       <div className={styles.distance}>
-        <RedirectHeader list={list} pageName="sự kiện"/>
+        <RedirectHeader list={list} pageName="sự kiện" />
         <div className="grid wide">
           <div className="row">
             <div className="col l-12 m-12 c-12">
@@ -44,8 +54,15 @@ const Events: NextPage<Props> = ({ data }) => {
                 {data.myEvents &&
                   data.myEvents.map((item) => (
                     <div className="col l-12 m-12 c-12" key={item.title}>
-                      <Link href={`/event/${item.title}`} >
-                      <div className={styles.eventItem}>
+                      <div
+                        className={styles.eventItem}
+                        onClick={() =>
+                          router.push({
+                            pathname: `/event/${item.id}`,
+                            query: { eventId: item.id },
+                          })
+                        }
+                      >
                         <div className="row">
                           <div className=" l-2 m-2 c-3">
                             <img src={item.thumbnailForMobile} />
@@ -54,14 +71,12 @@ const Events: NextPage<Props> = ({ data }) => {
                             <div className={styles.itemInfo}>
                               <div>
                                 <h2 className={styles.title}>{item.title}</h2>
-                                <p className={styles.summary} >{item.summary}</p>
                               </div>
                               <Badge colorScheme="green">Đang diễn ra</Badge>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </Link>
                     </div>
                   ))}
               </div>
@@ -69,7 +84,8 @@ const Events: NextPage<Props> = ({ data }) => {
           </div>
         </div>
       </div>
-      {isMobile ? <Footer  /> : <Footer isFixed={true} />}
+      {isMobile ? <Footer /> : <Footer isFixed={true} />}
+      {mySpinner && <MySpinner />}
     </div>
   );
 };

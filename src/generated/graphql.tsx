@@ -402,7 +402,6 @@ export type MyEvent = {
   content: Scalars['String'];
   createdAt: Scalars['DateTime'];
   id: Scalars['Float'];
-  summary: Scalars['String'];
   thumbnailForDesktop: Scalars['String'];
   thumbnailForMobile: Scalars['String'];
   title: Scalars['String'];
@@ -644,7 +643,7 @@ export type QueryGetCommentsArgs = {
 
 
 export type QueryGetEventArgs = {
-  title: Scalars['String'];
+  eventId: Scalars['Float'];
 };
 
 
@@ -1040,16 +1039,16 @@ export type GetCommentsQueryVariables = Exact<{
 export type GetCommentsQuery = { __typename?: 'Query', getComments: { __typename?: 'PaginationCommentsResponse', code: number, success: boolean, message?: string | null, totalCount?: number | null, cursor?: number | null, hasMore?: boolean | null, comments?: Array<{ __typename?: 'UserComment', content: string, rating: number, imagesComment?: Array<string> | null, createdAt: any, user: { __typename?: 'User', userName: string, userAvatar: string }, feedbacks?: Array<{ __typename?: 'Feedback', content: string, createdAt: any, admin: { __typename?: 'Admin', adminName: string, avatar: string } }> | null }> | null } };
 
 export type GetEventQueryVariables = Exact<{
-  title: Scalars['String'];
+  eventId: Scalars['Float'];
 }>;
 
 
-export type GetEventQuery = { __typename?: 'Query', getEvent: { __typename?: 'MyEventResponse', code: number, success: boolean, message?: string | null, myEvent?: { __typename?: 'MyEvent', title: string, thumbnailForDesktop: string, thumbnailForMobile: string, content: string, createdAt: any } | null } };
+export type GetEventQuery = { __typename?: 'Query', getEvent: { __typename?: 'MyEventResponse', code: number, success: boolean, message?: string | null, myEvent?: { __typename?: 'MyEvent', id: number, title: string, thumbnailForDesktop: string, thumbnailForMobile: string, content: string, createdAt: any } | null } };
 
 export type GetEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetEventsQuery = { __typename?: 'Query', getEvents: { __typename?: 'MyEventResponse', code: number, success: boolean, message?: string | null, myEvents?: Array<{ __typename?: 'MyEvent', title: string, content: string, thumbnailForDesktop: string, thumbnailForMobile: string }> | null } };
+export type GetEventsQuery = { __typename?: 'Query', getEvents: { __typename?: 'MyEventResponse', code: number, success: boolean, message?: string | null, myEvents?: Array<{ __typename?: 'MyEvent', id: number, title: string, content: string, thumbnailForDesktop: string, thumbnailForMobile: string }> | null } };
 
 export type GetGiftQueryVariables = Exact<{
   priceCondition: Scalars['Float'];
@@ -2550,12 +2549,13 @@ export type GetCommentsQueryHookResult = ReturnType<typeof useGetCommentsQuery>;
 export type GetCommentsLazyQueryHookResult = ReturnType<typeof useGetCommentsLazyQuery>;
 export type GetCommentsQueryResult = Apollo.QueryResult<GetCommentsQuery, GetCommentsQueryVariables>;
 export const GetEventDocument = gql`
-    query GetEvent($title: String!) {
-  getEvent(title: $title) {
+    query GetEvent($eventId: Float!) {
+  getEvent(eventId: $eventId) {
     code
     success
     message
     myEvent {
+      id
       title
       thumbnailForDesktop
       thumbnailForMobile
@@ -2578,7 +2578,7 @@ export const GetEventDocument = gql`
  * @example
  * const { data, loading, error } = useGetEventQuery({
  *   variables: {
- *      title: // value for 'title'
+ *      eventId: // value for 'eventId'
  *   },
  * });
  */
@@ -2600,6 +2600,7 @@ export const GetEventsDocument = gql`
     success
     message
     myEvents {
+      id
       title
       content
       thumbnailForDesktop

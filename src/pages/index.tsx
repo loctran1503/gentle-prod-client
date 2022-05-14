@@ -1,4 +1,4 @@
-import {  ChevronRightIcon } from "@chakra-ui/icons";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 
 import clsx from "clsx";
 import { GetServerSideProps, NextPage } from "next";
@@ -22,15 +22,13 @@ import { isMobile } from "react-device-detect";
 import { AMERICA } from "../utils/other/constants";
 import { localSelector } from "../store/reducers/localSlice";
 import { useSelector } from "react-redux";
-
-
+import Head from "next/head";
 
 interface Props {
   data: ProductKindResponse;
 }
 
 const Index: NextPage<Props> = ({ data }) => {
-  console.log(data)
   const { countryName } = useSelector(localSelector);
   const StarRatings = dynamic(() => import("react-star-ratings"));
 
@@ -39,6 +37,20 @@ const Index: NextPage<Props> = ({ data }) => {
 
   return (
     <div>
+      <Head>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta
+          name="description"
+          content=" Một nơi để mình chia sẻ những sản phẩm Sale ở những cửa hàng chính hãng hoặc ở các website uy tín như SEPHORA,OLIVE YOUNG,... Mình không săn sale sản phẩm ở Amazon,Ebay.Mình luôn cố gắng để cải thiện từng ngày,rất mong được mọi người ủng hộ và góp ý!"
+        />
+        <meta property="og:title" content="GENTLE" key="title" />
+        <meta name="title" content="GENTLEVN" key="title" />
+        <link
+          rel="icon"
+          href="https://lh3.googleusercontent.com/a-/AOh14GgUY8zMoVjsxNjXZWnMTDt9AFM7Itec_22a2pNj=s96-c"
+        />
+        <title>Gentle</title>
+      </Head>
       <Navbar />
       <div className="distance">
         {/* Mobile */}

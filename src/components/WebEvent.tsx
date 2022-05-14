@@ -43,7 +43,10 @@ const WebEvent = () => {
                 key={item.title}
                 src={item.thumbnailForMobile}
                 onClick={() => {
-                  router.push(`/event/${item.title}`);
+                  router.push({
+                    pathname:`/event/${item.id}`,
+                    query:{eventId:item.id}
+                  });
                 }}
               />
 
@@ -78,7 +81,10 @@ const WebEvent = () => {
                 key={item.title}
                 src={item.thumbnailForDesktop}
                 onClick={() => {
-                  router.push(`/event/${item.title}`);
+                  router.push({
+                    pathname:`/event/${item.id}`,
+                    query:{eventId:item.id}
+                  });
                 }}
               />
 

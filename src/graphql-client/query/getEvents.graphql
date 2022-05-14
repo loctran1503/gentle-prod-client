@@ -4,6 +4,7 @@ query getEvents{
     success
     message
     myEvents{
+      id
       title
       content
       thumbnailForDesktop

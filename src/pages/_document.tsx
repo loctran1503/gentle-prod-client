@@ -23,6 +23,8 @@ export default class Document extends NextDocument {
             rel="stylesheet"
           />
          <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+
+       
         </Head>
         <body>
           {/* Make Color mode to persists when you refresh the page. */}

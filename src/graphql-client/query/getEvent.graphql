@@ -1,9 +1,10 @@
-query GetEvent($title:String!){
-    getEvent(title:$title){
+query GetEvent($eventId:Float!){
+    getEvent(eventId:$eventId){
         code
         success
         message
         myEvent{
+            id
             title
             thumbnailForDesktop
             thumbnailForMobile
