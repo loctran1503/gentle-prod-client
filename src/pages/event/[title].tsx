@@ -1,7 +1,9 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import styles from "../../assets/css/pages/eventDetail.module.css";
 import Footer from "../../components/Footer";
+import MySpinner from "../../components/MySpinner";
 import Navbar from "../../components/Navbar";
 import RedirectHeader, {
   RedirectHeaderProps
@@ -33,13 +35,22 @@ const item2: RedirectHeaderProps = {
 const list: RedirectHeaderProps[] = [item1, item2];
 
 const Title: NextPage<Props> = ({ data }) => {
-
-
+  const [mySpinner, setMySpinner] = useState(true);
+  const router = useRouter()
+  useEffect(() => {
+    if (!data) {
+      router.push("/page-404");
+    } else {
+      setMySpinner(false);
+     
+    
+    }
+  }, []);
   return (
     <div>
       <Navbar />
       <div className="distance">
-        <RedirectHeader list={list} pageName="sự kiện" />
+        <RedirectHeader list={list} pageName="ưu đãi" />
         <div className="grid wide">
           <div className="row">
             <div className="col l-12 m-12 c-12">
@@ -72,7 +83,7 @@ const Title: NextPage<Props> = ({ data }) => {
         </div>
       </div>
       <Footer />
-      
+      {mySpinner && <MySpinner />}
     </div>
   );
 };

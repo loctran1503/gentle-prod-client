@@ -73,6 +73,7 @@ const createEvent = () => {
    })
    if(res.errors) console.log(res.errors)
    if(res.data?.adminCreateEvent.success) router.push("/admin/dashboard")
+   if(!res.data?.adminCreateEvent.success) alert(res.data?.adminCreateEvent.message)
   };
 
   return (

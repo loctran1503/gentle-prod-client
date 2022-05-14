@@ -43,7 +43,7 @@ const WebEvent = () => {
                 key={item.title}
                 src={item.thumbnailForMobile}
                 onClick={() => {
-                  router.push(`/events/${item.title}`);
+                  router.push(`/event/${item.title}`);
                 }}
               />
 
@@ -78,7 +78,7 @@ const WebEvent = () => {
                 key={item.title}
                 src={item.thumbnailForDesktop}
                 onClick={() => {
-                  router.push(`/events/${item.title}`);
+                  router.push(`/event/${item.title}`);
                 }}
               />
 
