@@ -35,6 +35,18 @@ export const client = new ApolloClient({
     typePolicies: {
       Query: {
         fields: {
+          getEvent: {
+            keyArgs: false,
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
+          getEvents: {
+            keyArgs: false,
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
           getUser: {
             keyArgs: false,
             merge(_, incoming) {
@@ -100,6 +112,7 @@ export const client = new ApolloClient({
               return { ...incoming, comments: paginationItems };
             },
           },
+
         },
       },
     },

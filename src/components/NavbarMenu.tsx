@@ -105,7 +105,7 @@ const NavbarMenu = () => {
               <div
                 className={clsx(styles.navbarMenuItem, styles.eventForMobile)}
               >
-                <h3>sự kiện </h3>
+                <h3>ưu đãi</h3>
               </div>
               </Link>
             </div>

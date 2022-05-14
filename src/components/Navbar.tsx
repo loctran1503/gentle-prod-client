@@ -257,7 +257,7 @@ const Navbar = () => {
                           router.push("/events");
                         }}
                       >
-                        sự kiện
+                        ưu đãi
                       </h3>
                     </div>
                   </div>
