@@ -45,13 +45,18 @@ export const charList = [
 export const TIME_CELERATED = "15/5/2022"
 
 // Cloudinary
-
-export const IMAGESUCCESS = "imageSuccess_070699"
+export const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/gentle070699/image/upload"
+export const SUCCESS_IMAGE = "imageSuccess_070699_2022"
+export const COMMENT_IMAGES = "imagesComment_070699_2022"
+export const BRAND_THUMBNAIL = "brandThumbnail_070699_2022"
+export const EVENT_THUMBNAIL = "eventThumbnail_070699_2022"
+export const DESCRIPTION_IMAGES = "imgDescription_070699_2022"
+export const PRODUCT_THUMBNAIL = "productThumbnail_070699_2022"
 
 //Error
 export const USER_ID_NULL = "Server error:Cannot read properties of undefined (reading 'userId')"
 
-export const MONEY_PAY_LIMIT = 2000000
+export const MONEY_PAY_LIMIT = 3000000
 
 //countries
 export const AMERICA= "MỸ"
@@ -66,4 +71,4 @@ export const US_DELIVERY_PRICE = 250000
 export const KOREA_DELIVERY_PRICE = 200000
 export const VIETNAM_DELIVERY_PRICE = 25000
 export const US_PRICE_FREESHIP = 5000000
-export const KOREA_PRICE_FREESHIP = 2000000
+export const KOREA_PRICE_FREESHIP = 3000000

@@ -10,6 +10,7 @@ import styles from "../assets/css/pages/writeComment.module.css";
 import LocalLoading from "../components/LocalLoading";
 import { CommentInput, useCreateCommentsMutation } from "../generated/graphql";
 import { localSelector } from "../store/reducers/localSlice";
+import { CLOUDINARY_URL, COMMENT_IMAGES } from "../utils/other/constants";
 import { WriteCommentProps } from "../utils/type/redux/reduxType";
 
 
@@ -80,9 +81,9 @@ const writeComment = () => {
       Array.from(event.target.files!).map(async (file) => {
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("upload_preset", "imagesComment");
+        formData.append("upload_preset", COMMENT_IMAGES);
         const result = await axios.post(
-          "https://api.cloudinary.com/v1_1/perfumeblog/image/upload",
+          CLOUDINARY_URL,
           formData
         );
         return result.data.secure_url;

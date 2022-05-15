@@ -120,5 +120,11 @@
 .iconMobileDetail{
     margin: 2px 2px 0 0;
 }
+.userHideCount{
+    user-select: none;
+    color: var(--grey-color);
+    padding: 4px 8px;
+    background-color: var(--blur-color);
+}
 
 

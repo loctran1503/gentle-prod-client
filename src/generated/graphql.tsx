@@ -474,6 +474,7 @@ export type PaginationUsersResponse = IResponse & {
   message?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
   totalCount?: Maybe<Scalars['Float']>;
+  userHideCount: Scalars['Float'];
   users?: Maybe<Array<User>>;
 };
 
@@ -1074,7 +1075,7 @@ export type GetPaginationUsersQueryVariables = Exact<{
 }>;
 
 
-export type GetPaginationUsersQuery = { __typename?: 'Query', getPaginationUsers: { __typename?: 'PaginationUsersResponse', code: number, success: boolean, message?: string | null, totalCount?: number | null, hasMore: boolean, cursor: number, users?: Array<{ __typename?: 'User', userName: string, userAvatar: string }> | null } };
+export type GetPaginationUsersQuery = { __typename?: 'Query', getPaginationUsers: { __typename?: 'PaginationUsersResponse', code: number, success: boolean, message?: string | null, totalCount?: number | null, userHideCount: number, hasMore: boolean, cursor: number, users?: Array<{ __typename?: 'User', userName: string, userAvatar: string }> | null } };
 
 export type GetProductQueryVariables = Exact<{
   productId: Scalars['ID'];
@@ -2784,6 +2785,7 @@ export const GetPaginationUsersDocument = gql`
     success
     message
     totalCount
+    userHideCount
     hasMore
     cursor
     users {

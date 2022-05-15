@@ -4,6 +4,7 @@ query GetPaginationUsers($skip:Float!){
     success
     message
     totalCount
+    userHideCount
     hasMore
     cursor
     users{

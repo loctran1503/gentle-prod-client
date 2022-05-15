@@ -16,7 +16,7 @@ import {
   useCreateProductMutation,
 } from "../../generated/graphql";
 import { authSelector } from "../../store/reducers/authSlice";
-import { AMERICA, KOREA } from "../../utils/other/constants";
+import { AMERICA, CLOUDINARY_URL, DESCRIPTION_IMAGES, KOREA, PRODUCT_THUMBNAIL } from "../../utils/other/constants";
 import { MoneyConverter } from "../../utils/other/ConvertToMoney";
 
 export interface PriceFieldsProps {
@@ -83,14 +83,16 @@ const createProduct = () => {
       Array.from(event.target.files!).map(async (file) => {
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("upload_preset", "imgDescription");
+        formData.append("upload_preset", DESCRIPTION_IMAGES);
         const result = await axios.post(
-          "https://api.cloudinary.com/v1_1/perfumeblog/image/upload",
+          CLOUDINARY_URL,
           formData
         );
         return result.data.secure_url;
       })
     ).then((imgList) => {
+      const productThumbnail = product.thumbnail
+      imgList.unshift(productThumbnail)
       setProduct({ ...product, imgDescription: imgList });
       setLocalLoading(false);
     });
@@ -99,18 +101,20 @@ const createProduct = () => {
   const handleThumbnail = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    setLocalLoading(true)
     const file: File = event.target.files![0];
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "thumbnail");
+    formData.append("upload_preset", PRODUCT_THUMBNAIL);
     const result = await axios.post(
-      "https://api.cloudinary.com/v1_1/perfumeblog/image/upload",
+      CLOUDINARY_URL,
       formData
     );
     setProduct({
       ...product,
       thumbnail: result.data.secure_url,
     });
+    setLocalLoading(false)
   };
 
   //Price Field

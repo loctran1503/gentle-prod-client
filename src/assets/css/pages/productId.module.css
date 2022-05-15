@@ -16,7 +16,7 @@
     padding: 12px 0;
 }
 .productName{
-    font-size: 1.4rem;
+    font-size: 1.3rem;
 
 }
 .component{
@@ -75,12 +75,14 @@
 .imgOther img{
     cursor: pointer;
     margin-bottom: 12px;
-    padding:4px;
-    height: 130px;
+   
+    height: auto;
+    padding: 6px;
     width: 100%;
-    object-fit: cover;
-    border: 1px solid var(--border-color);
-    border-radius: 2px;
+    object-fit: contain;
+   
+    border: 2px solid black;
+    
    
 }
 
@@ -92,11 +94,11 @@
 .introContainer h4{
     background-color:var(--border-color);
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 1rem;
     padding: 8px 0;
 }
 .introContainer p{
-    
+    font-size: 0.94rem;
     padding: 8px 12px;
     border-bottom: 1px solid var(--border-color);
 }
@@ -374,14 +376,14 @@ display: flex;
   width: 100%;
     z-index: 100;
     margin-left: -50%;
-   
+   margin-bottom: 60%;
     font-size: 2rem;
 }
 .btnSliderRight{
     width: 100%;
       z-index: 100;
 margin-left: 50%;
-     
+margin-bottom: 60%;
 
       font-size: 2rem;
   }

@@ -24,7 +24,7 @@ import {
   useAdminTakeMoneyFieldCompletedMutation,
 } from "../../generated/graphql";
 import { authSelector } from "../../store/reducers/authSlice";
-import { IMAGESUCCESS } from "../../utils/other/constants";
+import { CLOUDINARY_URL, SUCCESS_IMAGE } from "../../utils/other/constants";
 import { MoneyConverter } from "../../utils/other/ConvertToMoney";
 
 const takeMoneyField = () => {
@@ -105,9 +105,9 @@ const takeMoneyField = () => {
     const file: File = event.target.files![0];
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", IMAGESUCCESS);
+    formData.append("upload_preset", SUCCESS_IMAGE);
     const result = await axios.post(
-      "https://api.cloudinary.com/v1_1/perfumeblog/image/upload",
+      CLOUDINARY_URL,
       formData
     );
     setImageSuccess(result.data.secure_url);

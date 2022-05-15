@@ -9,7 +9,7 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  useMediaQuery,
+
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { memo, useEffect, useState } from "react";
@@ -23,9 +23,9 @@ import {
 import { authSelector, setIsHidden } from "../store/reducers/authSlice";
 import { TIME_CELERATED } from "../utils/other/constants";
 import LocalLoading from "./LocalLoading";
-
+import { isMobile } from "react-device-detect";
 const ShopInfo = () => {
-  const [isMaxEqual739] = useMediaQuery("(max-width: 739px)");
+
   const router = useRouter();
   const dispatch = useDispatch();
   const { data, loading, fetchMore } = useGetPaginationUsersQuery({
@@ -70,7 +70,7 @@ const ShopInfo = () => {
 
   return (
     <>
-      {isMaxEqual739 ? (
+      {isMobile ? (
         <div className={styles.mobileVersionContainer}>
           <div  className={styles.headingMobile}>
             <div></div>
@@ -91,14 +91,14 @@ const ShopInfo = () => {
                   <div className={styles.heading}>gentle</div>
                   <div className={styles.body}>
                     <div className={styles.createdAt}>
-                      <h2>Ngày thành lập:{TIME_CELERATED}</h2>
+                      <h2>Ngày thành lập:  {TIME_CELERATED}</h2>
                     </div>
 
                     <div className={styles.statistics}>
                       {data?.getPaginationUsers.success && (
                         <div className={styles.userPaidContainer}>
                           <h2 className={styles.totalProductPaid}>
-                            Sản phẩm đã bán:
+                            Sản phẩm đã bán:  
                             {productPaidCount?.getProductPaidAmount && productPaidCount.getProductPaidAmount>0 ? productPaidCount.getProductPaidAmount : 0}
                           </h2>
                           <div className={styles.userList}>
@@ -128,7 +128,9 @@ const ShopInfo = () => {
                                 <img src={item.userAvatar} />
                                 <h3>{item.userName}</h3>
                               </div>
+                              
                             ))}
+                           <h4 className={styles.userHideCount}>Khách hàng đã ẩn:  {data.getPaginationUsers.userHideCount}</h4>
                           </div>
                           <div className={styles.statisticsFooter}>
                             <Button
@@ -155,14 +157,14 @@ const ShopInfo = () => {
           <div className={styles.heading}>gentle</div>
           <div className={styles.body}>
             <div className={styles.createdAt}>
-              <h2>Ngày thành lập:12/3/2022</h2>
+            <h2>Ngày thành lập:  {TIME_CELERATED}</h2>
             </div>
 
             <div className={styles.statistics}>
               {data?.getPaginationUsers.success && (
                 <div className={styles.userPaidContainer}>
                   <h2 className={styles.totalProductPaid}>
-                    Sản phẩm đã bán:{productPaidCount?.getProductPaidAmount}
+                    Sản phẩm đã bán:  {productPaidCount?.getProductPaidAmount}
                   </h2>
                   <div className={styles.userList}>
                     <h3 className={styles.textSampleUserPaid}>
@@ -189,6 +191,7 @@ const ShopInfo = () => {
                         <h3>{item.userName}</h3>
                       </div>
                     ))}
+                     <h4 className={styles.userHideCount}>Khách hàng đã ẩn:  {data.getPaginationUsers.userHideCount}</h4>
                   </div>
                   <div className={styles.statisticsFooter}>
                     <Button

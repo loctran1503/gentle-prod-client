@@ -91,7 +91,11 @@ const Navbar = () => {
                             <h1
                               className={styles.appName}
                               onClick={() => {
-                                router.push("/");
+                                dispatch(setCountryName(AMERICA));
+                                router.push({
+                                  pathname: "/",
+                                  query: { countryName: AMERICA },
+                                });
                               }}
                             >
                               GENTLE
@@ -133,7 +137,11 @@ const Navbar = () => {
                     <h1
                       className={styles.appName}
                       onClick={() => {
-                        router.push("/");
+                        dispatch(setCountryName(AMERICA));
+                        router.push({
+                          pathname: "/",
+                          query: { countryName: AMERICA },
+                        });
                       }}
                     >
                       GENTLE
@@ -143,31 +151,25 @@ const Navbar = () => {
                     <div className={styles.navbarCategory}>
                       <h3
                         className={styles.navbarCategoryItem}
-                        onClick={() =>
-                          {
-                            dispatch(setCountryName(AMERICA))
-                            router.push({
-                              pathname: "/",
-                              query:{countryName:AMERICA}
-                            })
-
-                          }
-                          
-                        }
+                        onClick={() => {
+                          dispatch(setCountryName(AMERICA));
+                          router.push({
+                            pathname: "/",
+                            query: { countryName: AMERICA },
+                          });
+                        }}
                       >
                         {AMERICA}
                       </h3>
                       <h3
                         className={styles.navbarCategoryItem}
-                        onClick={() =>
-                        {
-                          dispatch(setCountryName(KOREA))
+                        onClick={() => {
+                          dispatch(setCountryName(KOREA));
                           router.push({
                             pathname: "/",
-                            query:{countryName:KOREA}
-                          })
-                        }
-                        }
+                            query: { countryName: KOREA },
+                          });
+                        }}
                       >
                         {KOREA}
                       </h3>

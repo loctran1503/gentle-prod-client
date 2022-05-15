@@ -8,6 +8,7 @@ import MySpinner from "../../components/MySpinner";
 import Navbar from "../../components/Navbar";
 import { MyEventInput, useAdminCreateEventMutation } from "../../generated/graphql";
 import { authSelector } from "../../store/reducers/authSlice";
+import { CLOUDINARY_URL, EVENT_THUMBNAIL } from "../../utils/other/constants";
 
 
 
@@ -49,9 +50,9 @@ const createEvent = () => {
     const file: File = event.target.files![0];
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "eventThumbnail");
+    formData.append("upload_preset", EVENT_THUMBNAIL);
     const result = await axios.post(
-      "https://api.cloudinary.com/v1_1/perfumeblog/image/upload",
+      CLOUDINARY_URL,
       formData
     );
     if(type==="desktop"){

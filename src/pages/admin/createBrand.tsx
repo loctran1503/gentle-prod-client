@@ -14,6 +14,7 @@ import {
   useAdminGetProductClassesQuery,
 } from "../../generated/graphql";
 import { authSelector } from "../../store/reducers/authSlice";
+import { BRAND_THUMBNAIL, CLOUDINARY_URL } from "../../utils/other/constants";
 
 const createBrand = () => {
   const router = useRouter();
@@ -52,9 +53,9 @@ const createBrand = () => {
     const file: File = event.target.files![0];
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "brandThumbnail");
+    formData.append("upload_preset", BRAND_THUMBNAIL);
     const result = await axios.post(
-      "https://api.cloudinary.com/v1_1/perfumeblog/image/upload",
+      CLOUDINARY_URL,
       formData
     );
 
