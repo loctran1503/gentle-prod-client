@@ -1,5 +1,5 @@
 import { Badge } from "@chakra-ui/react";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import styles from "../assets/css/pages/events.module.css";
 import Footer from "../components/Footer";
@@ -92,7 +92,7 @@ const Events: NextPage<Props> = ({ data }) => {
 
 export default Events;
 
-export async function getStaticProps() {
+export const getServerSideProps: GetServerSideProps =async () => {
   const res = await client.query<GetEventsQuery>({
     query: GetEventsDocument,
   });
@@ -100,7 +100,6 @@ export async function getStaticProps() {
   return {
     props: {
       data: res.data.getEvents,
-
       loading: res.loading,
     },
   };
