@@ -29,18 +29,15 @@ const Footer = ({ isFixed }: FooterProps) => {
                 <div className="col l-6 m-6 c-12">
                   <div className={styles.left}>
                     <div className="row">
-                      <div className="col l-4 m-4 c-4">
-                        {/* <img
-                          className={styles.imageIntro}
-                          src="https://bizweb.dktcdn.net/100/335/381/themes/762562/assets/logo.png?1650344273245"
-                        /> */}
+                      <div className="col l-4 m-4 c-5">
+                       
                         <div className={styles.temp}>
                           GENTLE
                         </div>
                       </div>
-                      <div className="col l-8 m-8 c-8">
+                      <div className="col l-8 m-8 c-7">
                         <div className={styles.textIntro}>
-                          Một nơi để mình chia sẻ những sản phẩm Sale ở những cửa hàng chính hãng hoặc ở các website uy tín như SEPHORA,OLIVE YOUNG,... Mình không săn sale sản phẩm ở Amazon,Ebay.Mình luôn cố gắng để cải thiện từng ngày,rất mong được mọi người ủng hộ và góp ý!
+                          Một nơi để mình chia sẻ những sản phẩm Sale ở những cửa hàng chính hãng hoặc ở các website uy tín như SEPHORA,OLIVE YOUNG,...Rất mong được mọi người ủng hộ và góp ý!
                         </div>
                       </div>
                     </div>
