@@ -21,7 +21,7 @@ const RedirectHeader = ({ list, pageName }: RedirectProps) => {
           <div className="row">
             <div className="col l-4 l-o-4 m-6 m-o-3 c-12">
               <div className="brandName">
-              <h1 >{pageName}</h1>
+              <h2 >{pageName}</h2>
               </div>
             </div>
           </div>

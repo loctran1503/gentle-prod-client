@@ -28,7 +28,6 @@ import {
 } from "../../generated/graphql";
 import { authSelector } from "../../store/reducers/authSlice";
 import {
-
   setBillProductsFromLocal,
   setEditProductPriceProps,
   setPaymentProps,
@@ -53,7 +52,6 @@ const ProductId: NextPage<Props> = ({ product }) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [priceBeforeDiscount, setPriceBeforeDiscount] = useState(0);
   const { type } = useSelector(authSelector);
-
 
   const [productThumbnail, setProductThumbnail] = useState("");
 
@@ -99,7 +97,7 @@ const ProductId: NextPage<Props> = ({ product }) => {
       productPrice: price.priceAfterDiscount,
       productThumbnail: product.thumbnail,
       productType: price.type,
-      countryNameForDeliveryPrice:product.country.countryName
+      countryNameForDeliveryPrice: product.country.countryName,
     });
     setPriceBeforeDiscount(price.price);
   };
@@ -189,7 +187,7 @@ const ProductId: NextPage<Props> = ({ product }) => {
             countryNameForDeliveryPrice: product.country.countryName,
           };
           localBillProductsTemp.push(item);
-          console.log(localBillProductsTemp)
+          console.log(localBillProductsTemp);
           localStorage.setItem(
             "localBillProducts",
             JSON.stringify(localBillProductsTemp)
@@ -278,7 +276,10 @@ const ProductId: NextPage<Props> = ({ product }) => {
                         onClick={() =>
                           router.push({
                             pathname: `/kind/${product.kind.id}`,
-                            query: { kindId: product.kind.id,countryName: product.country.countryName},
+                            query: {
+                              kindId: product.kind.id,
+                              countryName: product.country.countryName,
+                            },
                           })
                         }
                       >
@@ -313,38 +314,58 @@ const ProductId: NextPage<Props> = ({ product }) => {
                     <div className={styles.imgOther}>
                       <div className="row">
                         <div className="col l-12 m-12 c-12">
-                          <Carousel
-                            speed={200}
-                            swiping={true}
-                            slidesToShow={3}
-                            wrapAround
-                            cellSpacing={16}
-                            defaultControlsConfig={{
-                              pagingDotsStyle: { display: "none" },
-                              prevButtonStyle: { display: "none" },
-                              nextButtonStyle: { display: "none" },
-                            }}
-                            renderCenterLeftControls={({ previousSlide }) => (
-                                  <button onClick={previousSlide} className={styles.btnSliderLeft}>
-                                    <ChevronLeftIcon/>
-                                  </button>
-                                )}
-                                renderCenterRightControls={({ nextSlide }) => (
-                                  <button onClick={nextSlide} className={styles.btnSliderRight}>
-                                     <ChevronRightIcon/>
-                                  </button>
-                                )}
-                          >
-                            {product.imgDescription.map((item, index) => (
-                              <img
-                                src={item}
-                                key={index}
-                                onClick={() => {
-                                  setProductThumbnail(item);
-                                }}
-                              />
-                            ))}
-                          </Carousel>
+                          {product.imgDescription.length > 2 ? (
+                            <Carousel
+                              speed={200}
+                              swiping={true}
+                              slidesToShow={3}
+                              wrapAround
+                              cellSpacing={16}
+                              defaultControlsConfig={{
+                                pagingDotsStyle: { display: "none" },
+                                prevButtonStyle: { display: "none" },
+                                nextButtonStyle: { display: "none" },
+                              }}
+                              renderCenterLeftControls={({ previousSlide }) => (
+                                <button
+                                  onClick={previousSlide}
+                                  className={styles.btnSliderLeft}
+                                >
+                                  <ChevronLeftIcon />
+                                </button>
+                              )}
+                              renderCenterRightControls={({ nextSlide }) => (
+                                <button
+                                  onClick={nextSlide}
+                                  className={styles.btnSliderRight}
+                                >
+                                  <ChevronRightIcon />
+                                </button>
+                              )}
+                            >
+                              {product.imgDescription.map((item, index) => (
+                                <img
+                                  src={item}
+                                  key={index}
+                                  onClick={() => {
+                                    setProductThumbnail(item);
+                                  }}
+                                />
+                              ))}
+                            </Carousel>
+                          ) : (
+                            <>
+                              {product.imgDescription.map((item, index) => (
+                                <img
+                                  src={item}
+                                  key={index}
+                                  onClick={() => {
+                                    setProductThumbnail(item);
+                                  }}
+                                />
+                              ))}
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -493,10 +514,12 @@ const ProductId: NextPage<Props> = ({ product }) => {
             <div className="row">
               <div className="col l-12 m-12 c-12">
                 <div className={styles.reviewContainer}>
-                  <h1 className={styles.commentHeader} >Mô tả</h1>
-                  <p dangerouslySetInnerHTML={{
-                          __html: product.description,
-                        }}/>
+                  <h1 className={styles.commentHeader}>Mô tả</h1>
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: product.description,
+                    }}
+                  />
                 </div>
                 <div className="row">
                   <div className="col l-12 m-12 c-12">
@@ -506,8 +529,9 @@ const ProductId: NextPage<Props> = ({ product }) => {
                       >
                         <h1>Đánh giá</h1>
                       </div>
-                      
-                      {product.comments && product.comments.length>0 ?product.comments?.map((item) => (
+
+                      {product.comments && product.comments.length > 0 ? (
+                        product.comments?.map((item) => (
                           <div
                             className={styles.commentItem}
                             key={` ${item.user.userName}_${item.user.userAvatar}_${item.content}_${item.createdAt}`}
@@ -568,8 +592,10 @@ const ProductId: NextPage<Props> = ({ product }) => {
                               </div>
                             ))}
                           </div>
-                        )) : <h2 className={styles.noneComment}>Chưa có đánh giá</h2>
-                        }
+                        ))
+                      ) : (
+                        <h2 className={styles.noneComment}>Chưa có đánh giá</h2>
+                      )}
                       {/* <div className={styles.commentFooter}>
             {!data?.getComments.hasMore ? (
               <Button onClick={handleLoadmore}>Xem thêm</Button>

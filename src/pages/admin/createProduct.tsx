@@ -59,8 +59,10 @@ const createProduct = () => {
     classId: 0,
     countryName: AMERICA,
   });
-
+//sucmit
   const handleSubmit = async () => {
+   
+    
     const graphqlResult = await createNewProduct({
       variables: {
         productInput: product,
@@ -94,6 +96,7 @@ const createProduct = () => {
       const productThumbnail = product.thumbnail
       imgList.unshift(productThumbnail)
       setProduct({ ...product, imgDescription: imgList });
+
       setLocalLoading(false);
     });
   };
@@ -114,6 +117,8 @@ const createProduct = () => {
       ...product,
       thumbnail: result.data.secure_url,
     });
+   
+
     setLocalLoading(false)
   };
 
