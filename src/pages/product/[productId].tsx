@@ -354,17 +354,20 @@ const ProductId: NextPage<Props> = ({ product }) => {
                               ))}
                             </Carousel>
                           ) : (
-                            <>
+                            <div className="row">
                               {product.imgDescription.map((item, index) => (
-                                <img
+                                <div className="col l-4 m-4 c6"   key={index}>
+                                  <img
                                   src={item}
-                                  key={index}
+                                
                                   onClick={() => {
                                     setProductThumbnail(item);
                                   }}
                                 />
+                                </div>
                               ))}
-                            </>
+                              
+                            </div>
                           )}
                         </div>
                       </div>
