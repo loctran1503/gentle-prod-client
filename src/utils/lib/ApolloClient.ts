@@ -11,7 +11,7 @@ import JwtManager from "../other/JwtManager";
 const httpLink = new HttpLink({
   uri:
     process.env.NODE_ENV === "production"
-      ? "https://gentlevn.com/ecommerce"
+      ? "https://gentlevn.com/ecommerce/graphql"
       : "http://localhost:4000/graphql",
   credentials: "include",
 });
