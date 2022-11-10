@@ -11,8 +11,8 @@ import { MoneyConverter } from "../utils/other/ConvertToMoney";
 
 const SearchProduct = () => {
   const router = useRouter();
-  const [value, setValue] = useState("");
   const [isOpenResultInput, setIsOpenResultInput] = useState(false);
+  const [value, setValue] = useState("");
   const [displayResult, setDisplayResult] = useState<ReactNode>(null);
   let conditionText = useDebounced(value, 350);
 

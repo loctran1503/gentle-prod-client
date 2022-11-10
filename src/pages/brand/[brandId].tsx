@@ -52,7 +52,7 @@ const radioTypeList: FilterRadioProps[] = [
   },
 ];
 
-const BrandId: NextPage<Props> = ({ data }) => {
+const BrandId: NextPage<Props> = ({ data  }) => {
   const [mySpinner, setMySpinner] = useState(true);
   const [productClassIdChecked, setProductClassIdChecked] = useState(0);
   const [filterChecked, setFilterChecked] = useState("SALES_DESC");
